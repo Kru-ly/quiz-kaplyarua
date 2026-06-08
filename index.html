@@ -705,52 +705,58 @@ function confirmAdmin(){
     document.getElementById('adminPassInput').focus();
     return;
   }
-  closeAdminModal();
-  if(adminAction === 'reset') doResetAnswer();
-}
-
-function doResetAnswer(){
-  // หา student ที่กำลังแสดงใน done-overlay (จาก selector ปัจจุบัน)
+  // จำ cls/num ก่อน close modal (เพราะ overlay ซ่อน selector)
   const cls = document.getElementById('studentClass').value;
   const num = document.getElementById('studentNum').value;
+  closeAdminModal();
+  if(adminAction === 'reset') doResetAnswer(cls, num);
+}
+
+function doResetAnswer(targetCls, targetNum){
+  // รับค่าจาก parameter (กรณีปลดล็อกจาก index) หรือจาก selector ปัจจุบัน
+  const cls = targetCls || document.getElementById('studentClass').value;
+  const num = targetNum  || document.getElementById('studentNum').value;
   if(!cls || !num){
     alert('ไม่พบข้อมูลนักเรียน — กรุณาเลือกชั้นและเลขที่ก่อน');
     return;
   }
-  const key = sKey(cls, num);
-  try{
-    localStorage.removeItem(key);
-  }catch(e){}
-  // ปิด overlay และรีเซ็ตหน้า
+  // ลบ localStorage ของนักเรียนคนนั้น
+  try{ localStorage.removeItem(sKey(cls, num)); }catch(e){}
+
+  // ปิด overlay
   document.getElementById('doneOverlay').classList.remove('show');
-  // รีเซ็ต UI
-  document.getElementById('studentClass').disabled = false;
-  document.getElementById('studentNum').disabled = false;
-  document.getElementById('submitBtn').disabled = false;
+
+  // รีเซ็ต state
   window._quizDone = false;
   submitted = false;
   userAnswers = {};
-  currentStudent = null;
   finalScore = 0;
+  currentStudent = null;
+
   // รีเซ็ต quiz cards
-  document.querySelectorAll('.q-card').forEach(c=>{
-    c.className='q-card';
-  });
-  document.querySelectorAll('.choice-label').forEach(l=>{
-    l.classList.remove('selected','show-wrong');
-  });
-  document.querySelectorAll('.answered-badge').forEach(b=>{
-    b.className='answered-badge';b.textContent='';
-  });
-  document.querySelectorAll('.si').forEach(i=>i.value='');
-  // รีเซ็ต selector
-  document.getElementById('studentClass').value = '';
-  document.getElementById('studentNum').innerHTML = '<option value="">-- เลือกเลขที่ --</option>';
-  document.getElementById('studentNum').disabled = true;
-  document.getElementById('nameFetched').innerHTML = '<span style="opacity:.45;font-size:.87rem">เลือกชั้นและเลขที่เพื่อดึงชื่ออัตโนมัติ</span>';
-  updateProg();
-  // แสดง toast แจ้ง
-  showResetToast();
+  document.querySelectorAll('.q-card').forEach(c=>{ c.className='q-card'; });
+  document.querySelectorAll('.choice-label').forEach(l=>{ l.classList.remove('selected','show-wrong'); });
+  document.querySelectorAll('.answered-badge').forEach(b=>{ b.className='answered-badge'; b.textContent=''; });
+
+  // รีเซ็ต selector แล้ว auto-select นักเรียนคนที่ปลดล็อก
+  const clsSel = document.getElementById('studentClass');
+  const numSel = document.getElementById('studentNum');
+  clsSel.disabled = false;
+  numSel.disabled = false;
+  document.getElementById('submitBtn').disabled = false;
+
+  // Set ชั้น
+  clsSel.value = cls;
+  onClassChange();   // เติม dropdown เลขที่
+
+  // Set เลขที่ หลัง onClassChange flush DOM
+  setTimeout(()=>{
+    numSel.value = num;
+    onNumChange();   // ดึงชื่อ + checkDone (จะไม่ popup เพราะเพิ่ง removeItem)
+    updateProg();
+    showResetToast();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }, 80);
 }
 
 function showResetToast(){
@@ -767,7 +773,30 @@ function showResetToast(){
 }
 
 // INIT
-buildQuiz();updateProg();
+buildQuiz();
+updateProg();
+
+// ================================================================
+// รับสัญญาณปลดล็อกจากหน้าคะแนนเก็บ ผ่าน localStorage storage event
+// เมื่อ admin กด "ยกเลิก" ใน index.html → เขียน quiz_unlock → quiz.html รับทันที
+// ================================================================
+window.addEventListener('storage', function(e){
+  if(e.key !== 'quiz_unlock' || !e.newValue) return;
+
+  let payload;
+  try{ payload = JSON.parse(e.newValue); }catch(err){ return; }
+
+  const { cls, num, ts } = payload;
+
+  // ป้องกัน signal เก่า (> 15 วิ)
+  if(!cls || !num || Date.now() - ts > 15000) return;
+
+  // ลบ quiz localStorage ของนักเรียนคนนั้น
+  try{ localStorage.removeItem(sKey(cls, num)); }catch(err){}
+
+  // รีเซ็ต UI แล้ว auto-select นักเรียนคนนั้น
+  doResetAnswer(cls, num);
+});
 </script>
 </body>
 </html>
