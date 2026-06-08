@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แบบทดสอบหลังเรียน เรื่อง กาพย์เห่เรือ</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--gold-light:#f0d080;--gold-dark:#8a6a1e;--deep:#1a0e05;--dark:#2d1a07;--cream:#fdf6e3;--cream2:#f5e8c8;--accent:#8b1a1a;--accent2:#2d5a27}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:var(--deep);color:var(--cream);min-height:100vh;background-image:radial-gradient(ellipse at 20% 10%,rgba(201,168,76,.13) 0%,transparent 60%),radial-gradient(ellipse at 80% 90%,rgba(139,26,26,.10) 0%,transparent 60%),repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(201,168,76,.03) 40px,rgba(201,168,76,.03) 41px)}
+.hero{text-align:center;padding:44px 20px 28px}
+.hero::after{content:'';display:block;width:120px;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:18px auto 0}
+.school-tag{font-family:'Mitr',sans-serif;font-size:.78rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;opacity:.8;margin-bottom:8px}
+.hero h1{font-family:'Mitr',sans-serif;font-size:clamp(1.4rem,4vw,2.1rem);font-weight:600;color:var(--gold-light);text-shadow:0 2px 12px rgba(201,168,76,.3)}
+.hero h2{font-family:'Mitr',sans-serif;font-size:clamp(.95rem,2.5vw,1.4rem);font-weight:400;color:var(--cream2);margin-top:5px}
+.boat-icon{font-size:2.4rem;margin-bottom:8px;display:block;filter:drop-shadow(0 2px 8px rgba(201,168,76,.5))}
+.container{max-width:780px;margin:0 auto;padding:0 16px 60px}
+.info-card{background:rgba(45,26,7,.85);border:1.5px solid var(--gold-dark);border-radius:16px;padding:26px;margin-bottom:24px;backdrop-filter:blur(8px)}
+.info-card h3{font-family:'Mitr',sans-serif;color:var(--gold);font-size:.98rem;margin-bottom:16px;padding-bottom:9px;border-bottom:1px solid rgba(201,168,76,.25)}
+.field-group{margin-bottom:14px}
+.field-group label{display:block;font-size:.87rem;color:var(--gold-light);margin-bottom:5px;font-weight:500}
+.field-group select{width:100%;background:rgba(26,14,5,.7);border:1.5px solid rgba(201,168,76,.3);border-radius:8px;padding:10px 13px;color:var(--cream);font-family:'Sarabun',sans-serif;font-size:1rem;transition:border-color .2s,box-shadow .2s;outline:none}
+.field-group select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.18)}
+.field-group select option{background:var(--dark);color:var(--cream)}
+.fields-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:500px){.fields-row{grid-template-columns:1fr}}
+.name-fetched{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.35);border-radius:8px;padding:10px 14px;font-size:.95rem;color:var(--gold-light);margin-top:4px;min-height:40px;display:flex;align-items:center;gap:8px}
+.name-fetched .name-val{font-weight:600;color:var(--cream)}
+/* DONE OVERLAY */
+.done-overlay{display:none;position:fixed;inset:0;background:rgba(10,5,0,.93);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.done-overlay.show{display:flex}
+.done-box{background:var(--dark);border:2px solid var(--gold);border-radius:20px;padding:38px 30px;max-width:400px;width:90%;text-align:center;box-shadow:0 0 60px rgba(201,168,76,.25);animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+.done-icon{font-size:3rem;margin-bottom:10px}
+.done-title{font-family:'Mitr',sans-serif;font-size:1.3rem;color:var(--gold-light);margin-bottom:8px}
+.done-msg{font-size:.9rem;color:var(--cream2);line-height:1.75;margin-bottom:14px}
+.done-score{font-family:'Mitr',sans-serif;font-size:3rem;color:var(--gold-light);font-weight:600;line-height:1;margin:8px 0 4px;text-shadow:0 0 20px rgba(201,168,76,.4)}
+.done-score-sub{font-size:.88rem;color:rgba(201,168,76,.65);margin-bottom:20px}
+/* PROGRESS */
+.progress-bar-wrap{background:rgba(45,26,7,.7);border-radius:999px;height:6px;margin-bottom:22px;overflow:hidden;border:1px solid rgba(201,168,76,.15)}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold-light));border-radius:999px;transition:width .4s ease;width:0%}
+.progress-text{text-align:right;font-size:.8rem;color:rgba(201,168,76,.7);margin-bottom:7px}
+/* Q CARDS */
+.q-card{background:rgba(45,26,7,.85);border:1.5px solid rgba(201,168,76,.22);border-radius:16px;padding:22px 24px;margin-bottom:18px;backdrop-filter:blur(8px);transition:border-color .3s}
+.q-card.answered{border-color:rgba(201,168,76,.5)}
+.q-card.correct{border-color:var(--accent2);background:rgba(45,90,39,.2)}
+.q-card.wrong{border-color:var(--accent);background:rgba(90,20,20,.2)}
+.q-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:linear-gradient(135deg,var(--gold-dark),var(--gold));border-radius:50%;font-family:'Mitr',sans-serif;font-size:.83rem;font-weight:600;color:var(--deep);flex-shrink:0}
+.q-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.answered-badge{font-size:.72rem;padding:2px 10px;border-radius:20px;display:none}
+.answered-badge.show{display:inline-block}
+.answered-badge.correct-badge{background:rgba(76,175,80,.2);color:#a5d6a7;border:1px solid #4caf5055}
+.answered-badge.wrong-badge{background:rgba(229,57,53,.2);color:#ef9a9a;border:1px solid #e5393555}
+.q-text{font-size:.97rem;line-height:1.7;color:var(--cream);margin-bottom:12px;font-weight:500}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choice-label{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border:1.5px solid rgba(201,168,76,.2);border-radius:10px;cursor:pointer;transition:all .18s;background:rgba(26,14,5,.4);font-size:.92rem;line-height:1.55;color:var(--cream)}
+.choice-label:hover{border-color:var(--gold);background:rgba(201,168,76,.1)}
+.choice-label input[type="radio"]{display:none}
+.choice-marker{width:22px;height:22px;min-width:22px;border:2px solid rgba(201,168,76,.45);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .18s;margin-top:1px;font-size:.7rem;color:transparent}
+.choice-label.selected .choice-marker{background:var(--gold);border-color:var(--gold);color:var(--deep)}
+.choice-label.selected{border-color:var(--gold);background:rgba(201,168,76,.13)}
+.choice-label.show-wrong{background:rgba(139,26,26,.35);border-color:#e53935;color:#ef9a9a}
+.choice-label.show-wrong .choice-marker{background:#e53935;border-color:#e53935;color:#fff}
+.choice-poem{font-size:.9rem;line-height:1.85;white-space:pre-line}
+.poem-box{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.3);border-left:3px solid var(--gold);border-radius:10px;padding:14px 18px;margin:8px 0 14px;font-size:1rem;line-height:2.1;color:var(--gold-light);font-weight:500}
+.poem-box p{margin:0}
+/* SUBMIT */
+.submit-wrap{text-align:center;margin-top:28px}
+.btn-submit{font-family:'Mitr',sans-serif;font-size:1.04rem;font-weight:500;background:linear-gradient(135deg,var(--gold-dark),var(--gold-light));color:var(--deep);border:none;border-radius:50px;padding:13px 50px;cursor:pointer;letter-spacing:.05em;box-shadow:0 4px 20px rgba(201,168,76,.3);transition:all .2s}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,.45)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.validation-msg{color:#e57373;font-size:.85rem;margin-top:9px;display:none}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,5,0,.85);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal{background:var(--dark);border:2px solid var(--gold);border-radius:20px;padding:34px 30px;max-width:420px;width:90%;text-align:center;box-shadow:0 0 60px rgba(201,168,76,.25);animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+.modal-title{font-family:'Mitr',sans-serif;font-size:1rem;color:var(--gold);margin-bottom:4px;letter-spacing:.05em}
+.score-display{font-family:'Mitr',sans-serif;font-size:4rem;font-weight:600;color:var(--gold-light);line-height:1;text-shadow:0 0 30px rgba(201,168,76,.5);margin:10px 0 3px}
+.score-full{font-size:.9rem;color:rgba(201,168,76,.6);margin-bottom:10px}
+.score-pct{display:inline-block;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);border-radius:50px;padding:4px 16px;font-size:.92rem;color:var(--gold);margin-bottom:16px}
+.modal-name{font-size:.93rem;color:var(--cream2);margin-bottom:3px}
+.modal-class{font-family:'Mitr',sans-serif;font-size:1.05rem;color:var(--gold-light);font-weight:500;margin-bottom:20px}
+.btn-block{display:block;font-family:'Mitr',sans-serif;padding:11px 24px;border-radius:50px;font-size:.93rem;cursor:pointer;border:none;width:100%;margin-bottom:10px;transition:all .2s}
+.btn-red{background:linear-gradient(135deg,#8b1a1a,#c0392b);color:#fff;box-shadow:0 4px 16px rgba(139,26,26,.4)}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(139,26,26,.5)}
+.btn-gold{background:linear-gradient(135deg,#4a3a00,#8a6a1e);color:var(--cream)}
+.btn-gold:hover{transform:translateY(-2px)}
+.btn-outline{background:transparent;color:rgba(201,168,76,.7);border:1px solid rgba(201,168,76,.3)}
+.btn-outline:hover{background:rgba(201,168,76,.1);color:var(--gold)}
+.modal-wrong-summary{background:rgba(139,26,26,.18);border:1px solid rgba(229,57,53,.3);border-radius:10px;padding:10px 14px;font-size:.83rem;color:#ef9a9a;margin-bottom:14px;text-align:left;line-height:1.8;display:none}
+.modal-wrong-summary.show{display:block}
+</style>
+</head>
+<body>
+
+<!-- ALREADY-DONE OVERLAY -->
+<div class="done-overlay" id="doneOverlay">
+  <div class="done-box">
+    <div class="done-icon">🔒</div>
+    <div class="done-title">ทำแบบทดสอบไปแล้ว</div>
+    <div class="done-msg" id="doneMsgDetail"></div>
+    <div class="done-score" id="doneScoreVal">—</div>
+    <div class="done-score-sub" id="doneScoreSub"></div>
+    <div style="font-size:.82rem;color:rgba(201,168,76,.5);margin-top:8px">แบบทดสอบนี้ทำได้เพียงครั้งเดียว</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="hero">
+  <span class="boat-icon">⛵</span>
+  <div class="school-tag">โรงเรียนแก่นนครวิทยาลัย · วิชาภาษาไทย ม.6</div>
+  <h1>แบบทดสอบหลังเรียน</h1>
+  <h2>เรื่อง กาพย์เห่เรือ</h2>
+</div>
+
+<div class="container">
+  <div class="info-card">
+    <h3>📝 ข้อมูลผู้ทำแบบทดสอบ</h3>
+    <div class="fields-row">
+      <div class="field-group">
+        <label>ชั้นเรียน <span style="color:#e57373">*</span></label>
+        <select id="studentClass" onchange="onClassChange()">
+          <option value="">-- เลือกชั้น --</option>
+          <option>ม.6/1</option><option>ม.6/2</option><option>ม.6/3</option>
+          <option>ม.6/5</option><option>ม.6/11</option><option>ม.6/12</option><option>ม.6/20</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>เลขที่ <span style="color:#e57373">*</span></label>
+        <select id="studentNum" onchange="onNumChange()" disabled>
+          <option value="">-- เลือกเลขที่ --</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-group">
+      <label>ชื่อ - นามสกุล</label>
+      <div class="name-fetched" id="nameFetched">
+        <span style="opacity:.45;font-size:.87rem">เลือกชั้นและเลขที่เพื่อดึงชื่ออัตโนมัติ</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-text" id="progressText">ตอบแล้ว 0 / 20 ข้อ</div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div id="quizForm"></div>
+
+  <div class="submit-wrap">
+    <div class="validation-msg" id="validMsg"></div>
+    <button class="btn-submit" id="submitBtn" onclick="submitQuiz()">ส่งคำตอบ</button>
+  </div>
+</div>
+
+<!-- RESULT MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">📊 ผลการทดสอบ</div>
+    <div class="score-display" id="modalScore">0</div>
+    <div class="score-full" id="modalFull"></div>
+    <div class="score-pct" id="modalPct"></div>
+    <div class="modal-name" id="modalName"></div>
+    <div class="modal-class" id="modalClass"></div>
+    <div class="modal-wrong-summary" id="modalWrongSummary"></div>
+    <button class="btn-block btn-gold" onclick="reviewWrong()">🔍 ดูข้อที่ตอบผิด</button>
+    <a id="scoreLink" href="#" style="display:block;text-decoration:none;margin-bottom:10px">
+      <button class="btn-block btn-red" type="button" id="sendBtn">📊 ส่งคะแนนให้ครู</button>
+    </a>
+    <div id="redirectCountdown" style="font-size:.82rem;color:rgba(201,168,76,.6);margin-top:4px;min-height:18px"></div>
+    <div style="font-size:.8rem;color:rgba(201,168,76,.45);margin-top:8px">แบบทดสอบนี้ทำได้เพียงครั้งเดียว</div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// STUDENT DATABASE
+// ================================================================
+const STUDENTS = {
+'ม.6/1':[
+  {num:1,name:'นาย โฆษิตฉพัฒน์ ประจุดธะสี'},{num:2,name:'นาย ธนกฤต ผงทอง'},
+  {num:3,name:'นาย นพเก้า ปรินทร์ทอง'},{num:4,name:'นาย ปฏิภาณ แจ้งตาย'},
+  {num:5,name:'นาย ปรกฉัตร ผาวงษ์หา'},{num:6,name:'นาย เปี่ยมบุญ ชวดไชย'},
+  {num:7,name:'นาย ภูริธาดา ภูริวัฒนสุข'},{num:8,name:'นาย วชิรวิชญ์ ปินะถา'},
+  {num:9,name:'นาย วิชญชพล เปี่ยมเชาว์ธนากุล'},{num:10,name:'นาย สุภิวัฒน์ ลุนสา'},
+  {num:11,name:'นางสาว กรนันท์ ขันธวิชัย'},{num:12,name:'นางสาว กัญจนอมล แพงคำ'},
+  {num:13,name:'นางสาว กิตติญากร อวมสุวรรณ'},{num:14,name:'นางสาว กีรติกา ลุนพุฒ'},
+  {num:15,name:'นางสาว ขจีพรรณ สุดชาดี'},{num:16,name:'นางสาว เจสสิก้า กอก หยิ่น โล'},
+  {num:17,name:'นางสาว ฎีรฎา โพธิ์พุฒ'},{num:18,name:'นางสาว ฐิดาภา วิมูลชาติ'},
+  {num:19,name:'นางสาว ณฐรัตน์ ริมสกุล'},{num:20,name:'นางสาว เบญญาภา ขอมีกลาง'},
+  {num:21,name:'นางสาว ปริณดา บุญเรือง'},{num:22,name:'นางสาว ปวริศา อนุชน'},
+  {num:23,name:'นางสาว พริ้มพักตร์ วอศิริ'},{num:24,name:'นางสาว พิชยา พัฒมะนา'},
+  {num:25,name:'นางสาว ภควรรณ ปิยะกุลภัทร'},{num:26,name:'นางสาว วิชญาพร มินทระ'},
+  {num:27,name:'นางสาว อภิชญา ศรีชำนิ'}
+],
+'ม.6/2':[
+  {num:1,name:'นาย กมลภพ เรียงไธสง'},{num:2,name:'นาย กิติทัศ สุริ'},
+  {num:3,name:'นาย ขวัญประชา สุดชา'},{num:4,name:'นาย จิรภัทร ธาตุบุรมย์'},
+  {num:5,name:'นาย ไชยกิจ เจริญรุ่งเรืองกูร'},{num:6,name:'นาย ณัฐวรรธนกรณ์ สุวรรณพันธุ์'},
+  {num:7,name:'นาย ธนดล แสงพันธ์'},{num:8,name:'นาย ปริพัฒน์ เจริญชัย'},
+  {num:9,name:'นาย รติวรรธน์ แสนจันทร์ฮาม'},{num:10,name:'นาย หรัณยฤษฏ์ ภูผันผิน'},
+  {num:11,name:'นางสาว กนกพร คับพวง'},{num:12,name:'นางสาว กรชนก กระแสโท'},
+  {num:13,name:'นางสาว กัญญาพัชร อุทัยทอง'},{num:14,name:'นางสาว จิดาภา ซาเหลา'},
+  {num:15,name:'นางสาว ดวงพร บุญหลง'},{num:16,name:'นางสาว ธีรวรา วันเทาแก้ว'},
+  {num:17,name:'นางสาว นันทนภัส มิณะสิงห์'},{num:18,name:'นางสาว บุศราภรณ์ จันละคร'},
+  {num:19,name:'นางสาว ปทิตตา นาตาแสง'},{num:20,name:'นางสาว ปราณปรียา วรรณไชย'},
+  {num:21,name:'นางสาว ปุณยวีร์ ฮาดวิเศษ'},{num:22,name:'นางสาว พอเพียง ภูมีศรี'},
+  {num:23,name:'นางสาว พัชรพร หาวหาญ'},{num:24,name:'นางสาว พีรญา แฝงฤทธิ์'},
+  {num:25,name:'นางสาว มนัสนันท์ สะตะ'},{num:26,name:'นางสาว ศรัณยรัชต์ เทกอง'},
+  {num:27,name:'นางสาว สุฐิตา กังวานธรรมกุล'},{num:28,name:'นางสาว โสภิตสุดา มีศรี'},
+  {num:29,name:'นางสาว อังคณา ทุมโคตร'}
+],
+'ม.6/3':[
+  {num:1,name:'นาย กฤตานนท์ ศรีพิลา'},{num:2,name:'นาย กวินปรัตถ์ ชัยนิคม'},
+  {num:3,name:'นาย ณปกร กุนอก'},{num:4,name:'นาย ณิชกุล ศุภิรัตนกุล'},
+  {num:5,name:'นาย ตรินัยน์ ระว้า'},{num:6,name:'นาย เทพรัตน์ บุณยฤทธิ์รักษา'},
+  {num:7,name:'นาย ธัชธรรม ภักดี'},{num:8,name:'นาย นภัสกร คำชมภู'},
+  {num:9,name:'นาย นัฐพล บริบาล'},{num:10,name:'นาย พงศ์พล กีรตินันทกูล'},
+  {num:11,name:'นาย วายุ มุลตะกร'},{num:12,name:'นาย วีระวุฒิ เสนาสุ'},
+  {num:13,name:'นางสาว กฏิมา โอดพิมพ์'},{num:14,name:'นางสาว ชนมน มูลแม้'},
+  {num:15,name:'นางสาว ณัฐมน แก้วชิน'},{num:16,name:'นางสาว ตุลรภัฏ บุญไตรย์'},
+  {num:17,name:'นางสาว ทิพานันท์ พิรักษ์'},{num:18,name:'นางสาว ธนันณัฐ เถาหมอ'},
+  {num:19,name:'นางสาว นัทชา กองทองนอก'},{num:20,name:'นางสาว นัทธชนัน ทศชา'},
+  {num:21,name:'นางสาว นันทนา ภูพันธ์รัตน์'},{num:22,name:'นางสาว ปภาวรินทร์ ภะวะพินิจ'},
+  {num:23,name:'นางสาว ปิยะธิดา มะโนชมภู'},{num:24,name:'นางสาว พลอยณภัทร ขจัดพาล'},
+  {num:25,name:'นางสาว มิเกลลา ดินาตาลี'},{num:26,name:'นางสาว เวชกัญญา วรรณราช'},
+  {num:27,name:'นางสาว สีวิกากาญจน์ พันธ์ชูจิตร'},{num:28,name:'นางสาว อัจฉรา ผลาพรหม'},
+  {num:29,name:'นางสาว อารยา คำชาย'},{num:30,name:'นางสาว อินทุอร ธีรวัฒนกุล'}
+],
+'ม.6/5':[
+  {num:1,name:'นาย กรวิชญ์ ผาสุโพธิ์'},{num:2,name:'นาย กิตติภัทร อรรถาเวช'},
+  {num:3,name:'นาย คณิศร แพทย์กิจ'},{num:4,name:'นาย จุลจักร เนื่องแก้ว'},
+  {num:5,name:'นาย ณฐกร นาคเจือทอง'},{num:6,name:'นาย ณัฐชนน พราหมณ์ตะขบ'},
+  {num:7,name:'นาย ณัฐดนัย ฤกษ์สุขสมบัติ'},{num:8,name:'นาย ณัฐวุฒิ เพ็งค่ำ'},
+  {num:9,name:'นาย ธณากร สุนทร'},{num:10,name:'นาย ธนกร ไพรีรณ'},
+  {num:11,name:'นาย ปภาวิน ไตยนำ'},{num:12,name:'นาย ภาวิช ชัยพิวงศ์'},
+  {num:13,name:'นาย ภูวดล กวินพิทยาธร'},{num:14,name:'นางสาว กฤตพร สนิทเชื้อ'},
+  {num:15,name:'นางสาว กฤติกานต์ โคตรแก้ว'},{num:16,name:'นางสาว กวิสรา พันเดช'},
+  {num:17,name:'นางสาว กัญฐิกา สีพลเละ'},{num:18,name:'นางสาว กัลยสุดา ขาวอ่อน'},
+  {num:19,name:'นางสาว กุลปริยา ศรีประจันทร์'},{num:20,name:'นางสาว จุฬาลักษณ์ ศรีหลัก'},
+  {num:21,name:'นางสาว ชนินาถ อนันตกุล'},{num:22,name:'นางสาว ณัฏฐา รินนรา'},
+  {num:23,name:'นางสาว ณัฐธัญญา สีไต'},{num:24,name:'นางสาว นิษฐเนตร ประเสริฐสังข์'},
+  {num:25,name:'นางสาว ปริยากร ทองหลาง'},{num:26,name:'นางสาว ปาลิดา เลิศประเสริฐ'},
+  {num:27,name:'นางสาว พิยดา ประสมพล'},{num:28,name:'นางสาว มนปรียา ทะยะราช'},
+  {num:29,name:'นางสาว เรืองอุไร ชาวยศ'},{num:30,name:'นางสาว วณัชญา สามสี'},
+  {num:31,name:'นางสาว วริยาภรณ์ พลอาสา'},{num:32,name:'นางสาว ศศิวิมล สอนสี'},
+  {num:33,name:'นางสาว ศิรินลดา เถาศิลป์'},{num:34,name:'นางสาว ศุภกานต์ สังตะพันธ์'},
+  {num:35,name:'นางสาว ศุภานิช สีนาจ'},{num:36,name:'นางสาว สรัลชนา ซัง'},
+  {num:37,name:'นางสาว สุชาดา วรรณวิเชษฐ์'},{num:38,name:'นางสาว สุทธิดา บุญช่วย'},
+  {num:39,name:'นางสาว อมิตา เกรซ พาเนอร์ ศรีสันต์'},{num:40,name:'นางสาว อัญมณี ศรีบุญ'}
+],
+'ม.6/11':[
+  {num:1,name:'นาย กรวิทย์ หาญวงษา'},{num:2,name:'นาย กฤตภาส กลมกลอมทวี'},
+  {num:3,name:'นาย กิตติภัทร อัมมาลา'},{num:4,name:'นาย จักริน บุญลักษณ์'},
+  {num:5,name:'นาย จิรัชยานันท์ แข็งขยัน'},{num:6,name:'นาย ณภัทร สมบัติหอม'},
+  {num:7,name:'นาย ณัฐชนน อุรัญ'},{num:8,name:'นาย เทพภาณุ งามนิรัตน์'},
+  {num:9,name:'นาย แทนทันฑ์ โยนอก'},{num:10,name:'นาย ธณาธิป พลโชติ'},
+  {num:11,name:'นาย ธนพัทร มุลละคร'},{num:12,name:'นาย ธนวินท์ ราชสิงโห'},
+  {num:13,name:'นาย ปริพัทธ์ ภูโบราณ'},{num:14,name:'นาย ปิยังกูร ศิริภักดิ์'},
+  {num:15,name:'นาย พงษ์รพี ภูระยา'},{num:16,name:'นาย พีรวัส เหล่าจูม'},
+  {num:17,name:'นาย มงคลชัย ศิริโอด'},{num:18,name:'นาย ยศพร อนะคร'},
+  {num:19,name:'นาย ยศสรัล สายชม'},{num:20,name:'นาย ราชิต หงษ์คะ'},
+  {num:21,name:'นาย ศุภกร อุ่นพลทอง'},{num:22,name:'นาย ศุภกฤต พิลาดา'},
+  {num:23,name:'นาย อธิวัฒน์ โยธาสมบัติ'},{num:24,name:'นางสาว กชพร ปลั่งศิริ'},
+  {num:25,name:'นางสาว กัลยกร อิศรา'},{num:26,name:'นางสาว เกศชยามล ภูมิผักแว่น'},
+  {num:27,name:'นางสาว ชนธิชา สุริยา'},{num:28,name:'นางสาว ชนันธร กีรติกูล'},
+  {num:29,name:'นางสาว ชาลิสา หล้าปุย'},{num:30,name:'นางสาว ฐิตาภา ศรีศักดิ์'},
+  {num:31,name:'นางสาว ณัฐกมล ขจรศรี'},{num:32,name:'นางสาว ณัฐมน เสียงใส'},
+  {num:33,name:'นางสาว เบญญาภา จันดีบาง'},{num:34,name:'นางสาว ประภาศิริ คำมูล'},
+  {num:35,name:'นางสาว พิชญสินี ศรีไชโย'},{num:36,name:'นางสาว ภัณฑิรา ตาเมือง'},
+  {num:37,name:'นางสาว วิมพ์วิภา เวียงอินทร์'},{num:38,name:'นางสาว วีริสรา เยื้องกลาง'},
+  {num:39,name:'นางสาว สุธิมา สุบิน'},{num:40,name:'นางสาว สุภานัน ทองสุข'}
+],
+'ม.6/12':[
+  {num:1,name:'นาย คุณรัฐ มาศยคง'},{num:2,name:'นาย ชินดนัย สิงห์อารมย์'},
+  {num:3,name:'นาย ชิษนุพงศ์ ปิยะวงษ์'},{num:4,name:'นาย โชติปุญโญ นนสีลาด'},
+  {num:5,name:'นาย ญาณวุฒิ พระคุณ'},{num:6,name:'นาย ณัฐนนท์ สุทธิรักษา'},
+  {num:7,name:'นาย ทักษพล โลแก้ว'},{num:8,name:'นาย ทิวากร ฉัตรานุฉัตร'},
+  {num:9,name:'นาย แทนคุณ จันงาม'},{num:10,name:'นาย ธนกฤต ฉลูทอง'},
+  {num:11,name:'นาย ธีรจุฑา ภูกาบ'},{num:12,name:'นาย ธีรภัทร หัสกัน'},
+  {num:13,name:'นาย นราวิชญ์ ผางจันทร์ดา'},{num:14,name:'นาย นัธทวัฒน์ ภูสง่า'},
+  {num:15,name:'นาย นันทภพ แสงตามี'},{num:16,name:'นาย พงศ์พณิช มรรคอนันตโชค'},
+  {num:17,name:'นาย พัทธดนย์ อินทรสงเคราะห์'},{num:18,name:'นาย พิชยะ อ่อนล้ำ'},
+  {num:19,name:'นาย พีรทัต พลเยี่ยม'},{num:20,name:'นาย ภาณุ ชำนาญไพร'},
+  {num:21,name:'นาย ภูดิศ ปริญญารัตน์'},{num:22,name:'นาย ภูมิพัฒน์ จำเนียรพล'},
+  {num:23,name:'นาย สรวิชญ์ อินหาดกรวด'},{num:24,name:'นาย สรศักดิ์ นนทะโมลี'},
+  {num:25,name:'นาย อธิชัย พวงสูงเนิน'},{num:26,name:'นางสาว กัลยกร โดดชัย'},
+  {num:27,name:'นางสาว กานต์ธิดา หมองคำหมื่น'},{num:28,name:'นางสาว จิรชยา เจ็กไธสง'},
+  {num:29,name:'นางสาว ญานิศา รังคะวงษ์'},{num:30,name:'นางสาว ณัฐริการ์ แก้วก่ำ'},
+  {num:31,name:'นางสาว แทนขวัญ อุปปง'},{num:32,name:'นางสาว ธัญชนก เพ็ชรคำ'},
+  {num:33,name:'นางสาว พัณณิตา ทะสังขาร์'},{num:34,name:'นางสาว พิมพ์ชนก โสภาตา'},
+  {num:35,name:'นางสาว พิมลรัตน์ อัยยะ'},{num:36,name:'นางสาว รินนภา อนุศิริ'},
+  {num:37,name:'นางสาว วรัญญา ชมวงศ์'},{num:38,name:'นางสาว ศศิวิมล บุญเอก'},
+  {num:39,name:'นางสาว ศิริประภา เดชแพง'},{num:40,name:'นางสาว สุนันทา ศิริมา'},
+  {num:41,name:'นางสาว ไอยาดา สูนย์ชัยยา'}
+],
+'ม.6/20':[
+  {num:1,name:'นาย กันตภณ นาควัฒนกุล'},{num:2,name:'นาย คูณอนันต์ สิงห์วิเศษ'},
+  {num:3,name:'นาย ชยกฤต ธรรมวงษา'},{num:4,name:'นาย ทัชชกร อมราพรปวรา'},
+  {num:5,name:'นาย เปรม เทพศิริอำนวย'},{num:6,name:'นาย วชิรวิทย์ พิสุทธิมาน'},
+  {num:7,name:'นาย วรภพ ช่างทองที'},{num:8,name:'นาย วิวิทย์ นาคเครือ'},
+  {num:9,name:'นางสาว กัญญวรินทร์ พรมจักร'},{num:10,name:'นางสาว กุลภรณ์ นาอุดม'},
+  {num:11,name:'นางสาว ชันญาพรพ์ ศิริเต็มกุล'},{num:12,name:'นางสาว ฐานิกา หงษ์สุวรรณ'},
+  {num:13,name:'นางสาว ดนุลดามาศภรณ์ ฟุ้งเฟื่อง'},{num:14,name:'นางสาว ธยศศวรรณ ถูไกรวงษ์'},
+  {num:15,name:'นางสาว พัทธนันท์ ทัศนพงษ์'},{num:16,name:'นางสาว เพ็ญพิชชา ปุนนิน'},
+  {num:17,name:'นางสาว รุจิดา กาสา'},{num:18,name:'นางสาว วฤนดา คำแป้น'},
+  {num:19,name:'นางสาว อนัญญา บุญจู'},{num:20,name:'นางสาว อิสรา เอกอุ'}
+]
+};
+
+// ================================================================
+// ANSWER KEY
+// ================================================================
+const ANSWER_KEY={1:'ค',2:'ค',3:'ค',4:'ง',5:'ง',6:'ง',7:'ง',8:'ข',9:'ข',10:'ข',11:'ก',12:'ก',13:'ค',14:'ก',15:'ค',16:'ข',17:'ง',18:'ค',19:'ง',20:'ง'};
+const TOTAL=20;
+
+// ================================================================
+// QUESTIONS
+// ================================================================
+const questions=[
+  {num:1,text:'เมื่อสมเด็จพระเจ้าอยู่หัวบรมโกศ ทรงกระทำพิธีปราบดาภิเษก เจ้าฟ้ากุ้งทรงได้รับการสถาปนาตามข้อใด',choices:[{key:'ก',text:'เจ้าฟ้าธรรมธิเยศรไชยเชษฐ์สุริยวงศ์'},{key:'ข',text:'กรมพระราชวังบวรสถานมงคล'},{key:'ค',text:'เจ้าฟ้ากรมขุนเสนาพิทักษ์'},{key:'ง',text:'พระมหาอุปราชา'}]},
+  {num:2,text:'เจ้าฟ้าธรรมธิเบศรทรงนิพนธ์กาพย์เห่เรือขึ้น เนื่องในกาสใด',choices:[{key:'ก',text:'ในงานฉลองกรุงศรีอยุธยา'},{key:'ข',text:'ในเทศกาลทอดผ้าพระกฐิน'},{key:'ค',text:'โดยเสด็จพระเจ้าอยู่หัวบรมโกศไปนมัสการพระพุทธบาท'},{key:'ง',text:'โดยเสด็จพระเจ้าอยู่หัวบรมโกศประพาสทางน้ำในเดือนสิบสอง'}]},
+  {num:3,text:'ข้อใดเป็นลักษณะการประพันธ์กาพย์เห่เรือ',choices:[{key:'ก',text:'เป็นคำประพันธ์แต่งด้วยกาพย์เห่'},{key:'ข',text:'เป็นคำประพันธ์แต่งด้วยกาพย์ยานี และโคลงสี่สุภาพ'},{key:'ค',text:'เป็นคำประพันธ์แต่งด้วยกาพย์ยานี โดยมีโคลงสี่สุภาพนำ 1 บท'},{key:'ง',text:'เป็นคำประพันธ์แต่งด้วยกาพย์ยานี สลับกับโคลงสี่สุภาพบทต่อบท'}]},
+  {num:4,text:'กาพย์เห่เรือของเจ้าฟ้าธรรมธิเบศร ไม่ปรากฏลักษณะการแต่งในข้อใด',choices:[{key:'ก',text:'บทพรรณนาชมนก ชมไม้'},{key:'ข',text:'บทพรรณนาชมปลา'},{key:'ค',text:'บทรำพึงรำพันถึงนางอันเป็นที่รัก'},{key:'ง',text:'บทพรรณนาชมไพร่พล'}]},
+  {num:5,text:'ข้อใดคือจุดมุ่งหมายในการเห่เรือของไทย',choices:[{key:'ก',text:'เพื่อใช้ในพระราชพิธี'},{key:'ข',text:'เพื่อเป็นพุทธบูชา'},{key:'ค',text:'เพื่อบูชาเจ้าแม่คงคา'},{key:'ง',text:'เพื่อให้จังหวะฝีพายและความเพลิดเพลิน'}]},
+  {num:6,text:'สมเด็จกรมพระยาดำรงเดชานุภาพ ทรงเล่าว่าในการเห่เรือเที่ยวกลับนั้นต้องเห่แบบใด',choices:[{key:'ก',text:'ช้าลวะเห่ เพราะพายทวนน้ำเรือจึงเคลื่อนไปได้ช้า'},{key:'ข',text:'สวะเห่ เพราะให้เข้ากับจังหวะพายที่จ้ำลงถี่ๆ'},{key:'ค',text:'มูลเห่ เพราะเห่เป็นพื้นๆ ทำนองธรรมดา'},{key:'ง',text:'มูลเห่ เพราะพายทวนน้ำใช้ทำนองที่จะให้เข้ากับจังหวะพาย'}]},
+  {num:7,text:'การใช้ลำนำการเห่เรือแบบใด ที่ฝีพายจะบรรจงพายให้งามได้',choices:[{key:'ก',text:'มูลเห่'},{key:'ข',text:'โห่เห่'},{key:'ค',text:'สวะเห่'},{key:'ง',text:'ช้าลวะเห่'}]},
+  {num:8,text:'บทประพันธ์ข้างต้น มีวรรณศิลป์ที่โดดเด่นเหมือนกับข้อใด',
+    poem:'<div class="poem-box"><p>รอนรอนสุริยโอ้ &nbsp;&nbsp; อัสดง</p><p>เรื่อยเรื่อยลับเมรุลง &nbsp;&nbsp; ค่ำแล้ว</p><p>รอนรอนจิตจำนง &nbsp;&nbsp; นุชพี่ เพียงแม่</p><p>เรื่อยเรื่อยเรียมคอยแก้ว &nbsp;&nbsp; คลับคล้ายเรียม</p></div>',
+    choices:[{key:'ก',text:'เรือครุฑยุดนาคหิ้ว  ลิ่วลอยมาพาผันผยอง\nพลพายกรายพายทอง  ร้องโห่เห่โอ้เห่มา'},{key:'ข',text:'เรื่อยเรื่อยมาเรียงเรียง  นกบินเฉียงไปทั้งหมู่\nตัวเดียวมาพลัดคู่  เหมือนพี่อยู่ผู้เดียวดาย'},{key:'ค',text:'นวลจันทร์เป็นนวลจริง  เจ้างามพริ้งยิ่งนวลปลา\nคางเบือนเบือนหน้ามา  ไม่งามเท่าเจ้าเบือนชาย'},{key:'ง',text:'เพียนทองงามดั่งทอง  ไม่เหมือนน้องห่มตาดพราย\nกระแหแหห่างชาย  ดั่งสายสวาทคลาดจากสม'}]},
+  {num:9,text:'กาพย์เห่เรือของเจ้าฟ้าธรรมธิเบศร มีลักษณะการดำเนินเรื่องตามข้อใด',choices:[{key:'ก',text:'สัมพันธ์กับเวลาใน 1 ชั่วโมง'},{key:'ข',text:'สัมพันธ์กับเวลาใน 1 วัน'},{key:'ค',text:'สัมพันธ์กับเวลาใน 1 เดือน'},{key:'ง',text:'สัมพันธ์กับเวลาใน 1 ปี'}]},
+  {num:10,text:'บทประพันธ์ในข้อใดใช้โวหารภาพพจน์ต่างจากข้ออื่น',choices:[{key:'ก',text:'สรมุขสุขสี่ด้าน เพียงพิมานผ่านเมฆา'},{key:'ข',text:'น้ำเงินคือเงินยวง ขาวพรายช่วงสีสำอาง'},{key:'ค',text:'เพียนทองงามดั่งทอง ไม่เหมือนน้องห่มตาดพราย'},{key:'ง',text:'โนรีสีปานชาด เหมือนช่างฉลาดวาดแต้มลาย'}]},
+  {num:11,text:'กาพย์เห่เรือของเจ้าฟ้าธรรมธิเบศร สะท้อนให้เห็นภาพเมืองไทยสมัยอยุธยาตอนปลายอย่างไร',choices:[{key:'ก',text:'การคมนาคมใช้ทางน้ำเป็นสำคัญ'},{key:'ข',text:'การจราจรติดขัด เพราะสภาพน้ำท่วม'},{key:'ค',text:'มีการละเล่นทางน้ำที่สนุกสนาน เมื่อถึงหน้าน้ำ'},{key:'ง',text:'ในแต่ละปีจะมีงานนักขัตฤกษ์ ซึ่งมีการเห่เรือหลวงโดยใช้บทเห่เรือของเจ้าฟ้ากุ้ง'}]},
+  {num:12,text:'คำประพันธ์ข้างต้นใช้ศิลปะในการแต่งแบบใด',
+    poem:'<div class="poem-box"><p><u>แก้มช้ำ</u>ช้ำใครต้อง &nbsp;&nbsp; อันแก้มน้องช้ำเพราะชม</p><p><u>ปลาทุก</u>ทุกข์อกกรม &nbsp;&nbsp; เหมือนทุกข์พี่ที่จากนาง</p></div>',
+    choices:[{key:'ก',text:'ใช้คำซ้ำ'},{key:'ข',text:'สัมผัสอักษร'},{key:'ค',text:'เล่นคำ'},{key:'ง',text:'สัมผัสสระ'}]},
+  {num:13,text:'คำประพันธ์ในข้อใดสะท้อนคุณค่าด้านสังคมในสมัยอยุธยา',choices:[{key:'ก',text:'นวลจันทร์เป็นนวลจริง เจ้างามพริ้งยิ่งนวลปลา'},{key:'ข',text:'คางเบือนเบือนหน้ามา ไม่งามเท่าเจ้าเบือนชาย'},{key:'ค',text:'เพียนทองงามดั่งทอง ไม่เหมือนน้องห่มตาดพราย'},{key:'ง',text:'กระแหแหห่างชาย ดั่งสายสวาทคลาดจากสม'}]},
+  {num:14,text:'กาพย์เห่เรือในตอนใด ที่ผู้แต่งไม่ได้แทรกอารมณ์รักและอาลัย',choices:[{key:'ก',text:'เห่เรือกระบวน'},{key:'ข',text:'เห่ชมปลา'},{key:'ค',text:'เห่ชมไม้'},{key:'ง',text:'เห่ชมนก'}]},
+  {num:15,text:'คำประพันธ์ในข้อใดใช้ภาพพจน์อุปลักษณ์',choices:[{key:'ก',text:'ตัวเดียวมาพลัดคู่ เหมือนพี่อยู่ผู้เดียวดาย'},{key:'ข',text:'ไพเราะเพราะกังวาน ปานเสียงน้องร้องสั่งชาย'},{key:'ค',text:'น้ำเงินคือเงินยวง ขาวพรายช่วงสีสำอาง'},{key:'ง',text:'นาคาหน้าดั่งเป็น ดูเขม้นเห็นขบขัน'}]},
+  {num:16,text:'"ชาย" ในข้อใดที่มีความหมายต่างกับข้ออื่น',choices:[{key:'ก',text:'คางเบือนเบือนหน้ามา ไม่งามเท่าเจ้าเบือนชาย'},{key:'ข',text:'กระแหแหห่างชาย ดั่งสายสวาทคลาดจากสม'},{key:'ค',text:'ไพเราะเพราะกังวาน ปานเสียงน้องร้องสั่งชาย'},{key:'ง',text:'ชายใดในแผ่นดิน ไม่เหมือนพี่ที่ตรอมใจ'}]},
+  {num:17,text:'โคลงสี่สุภาพข้างต้นนี้มีลักษณะเด่นอย่างไร',
+    poem:'<div class="poem-box"><p>พิศพรรณปลาว่ายเคล้า &nbsp;&nbsp; คลึงกัน</p><p>ถวิลสุดาดวงจันทร์ &nbsp;&nbsp; แจ่มหน้า</p><p>มัสยาย่อมพัวพัน &nbsp;&nbsp; พิศวาส</p><p>ควร ฤ พรากน้องช้า &nbsp;&nbsp; ชวดเคล้าคลึงสม</p></div>',
+    choices:[{key:'ก',text:'มีสัมผัสอักษรแพรวพราว'},{key:'ข',text:'มีสัมผัสสระไพเราะ'},{key:'ค',text:'มีสัมผัสในทั้งสัมผัสสระและอักษร'},{key:'ง',text:'มีสัมผัสอักษรระหว่างวรรคทุกบาท'}]},
+  {num:18,text:'ข้อใดไม่แสดงอาการเคลื่อนไหว',choices:[{key:'ก',text:'จำปาหนาแน่นเนื่อง คลี่กลีบเหลืองเรืองอร่าม'},{key:'ข',text:'ไม่เท่าเจ้าโฉมฉาย ห่มตาดพรายกรายกรมา'},{key:'ค',text:'ประยงค์ทรงพวงห้อย ระย้าย้อยห้อยพวงกรอง'},{key:'ง',text:'มะลิวัลย์พันจิกจวง ดอกเป็นพวงร่วงเรณู'}]},
+  {num:19,text:'คำประพันธ์ในข้อใดไม่แสดงถึงอิทธิพลของวรรณคดีอินเดียที่มีต่อวรรณคดีไทย',choices:[{key:'ก',text:'เรือครุฑยุดนาคหิ้ว ลิ่วลอยมาพาผันผยอง'},{key:'ข',text:'เพียงหงส์ทรงพรหมินทร์ ลินลาศเลื่อนเตือนตาชม'},{key:'ค',text:'เพียงม้าอาชาทรง องค์พระพายผายผันผยอง'},{key:'ง',text:'เรือชัยไวว่องวิ่ง รวดเร็วจริงยิ่งอย่างลม'}]},
+  {num:20,text:'ความในข้อใดที่แสดงถึงความสัมพันธ์อันลึกซึ้งของบุคคลได้อย่างแยบยลที่สุด',choices:[{key:'ก',text:'แก้มช้ำช้ำใครต้อง อันแก้มน้องช้ำเพราะชม'},{key:'ข',text:'เนื้ออ่อนอ่อนแต่ชื่อ เนื้อน้องหรืออ่อนทั้งกาย'},{key:'ค',text:'รวยรินกลิ่นรำเพย คิดพี่เคยเชยกลิ่นปราง'},{key:'ง',text:'เหมือนพี่นี้ประคอง รับขวัญน้องต้องมือเบา'}]}
+];
+
+// ================================================================
+// STATE
+// ================================================================
+const userAnswers={};let finalScore=0;let submitted=false;let currentStudent=null;
+
+function sKey(cls,num){return'quiz_kapyehrue_'+cls.replace('/','_')+'_'+num;}
+
+// ================================================================
+// CLASS / NUM SELECTORS
+// ================================================================
+function onClassChange(){
+  const cls=document.getElementById('studentClass').value;
+  const numSel=document.getElementById('studentNum');
+  numSel.innerHTML='<option value="">-- เลือกเลขที่ --</option>';
+  numSel.disabled=!cls;
+  document.getElementById('nameFetched').innerHTML='<span style="opacity:.45;font-size:.87rem">เลือกชั้นและเลขที่เพื่อดึงชื่ออัตโนมัติ</span>';
+  currentStudent=null;
+  if(!cls)return;
+  (STUDENTS[cls]||[]).forEach(s=>{
+    const o=document.createElement('option');
+    o.value=s.num; o.textContent='เลขที่ '+s.num;
+    numSel.appendChild(o);
+  });
+}
+
+function onNumChange(){
+  const cls=document.getElementById('studentClass').value;
+  const num=parseInt(document.getElementById('studentNum').value);
+  const box=document.getElementById('nameFetched');
+  if(!cls||!num){box.innerHTML='<span style="opacity:.45;font-size:.87rem">เลือกชั้นและเลขที่เพื่อดึงชื่ออัตโนมัติ</span>';currentStudent=null;return;}
+  const s=(STUDENTS[cls]||[]).find(x=>x.num===num);
+  if(s){
+    box.innerHTML='<span>👤</span><span class="name-val">'+s.name+'</span>';
+    currentStudent={cls,num,name:s.name};
+    checkDone(cls,num,s.name);
+  } else {
+    box.innerHTML='<span style="color:#e57373">ไม่พบชื่อนักเรียน</span>';
+    currentStudent=null;
+  }
+}
+
+function checkDone(cls,num,name){
+  let saved;
+  try{saved=localStorage.getItem(sKey(cls,num));}catch(e){return;}
+  if(!saved)return;
+  try{
+    const d=JSON.parse(saved);
+    finalScore=d.score;
+    document.getElementById('doneMsgDetail').innerHTML='<strong>'+name+'</strong><br>ชั้น '+cls+' เลขที่ '+num+'<br><span style="font-size:.82rem;opacity:.7">ทำแบบทดสอบไปแล้วเมื่อ: '+new Date(d.ts).toLocaleString('th-TH')+'</span>';
+    document.getElementById('doneScoreVal').textContent=d.score+'/'+TOTAL+' ข้อ';
+    document.getElementById('doneScoreSub').textContent='= '+d.scaled+' / 2.5 คะแนน ('+d.pct+'%)';
+    document.getElementById('doneOverlay').classList.add('show');
+  }catch(e){}
+}
+
+// ================================================================
+// BUILD QUIZ
+// ================================================================
+function buildQuiz(){
+  const c=document.getElementById('quizForm');
+  questions.forEach(q=>{
+    const card=document.createElement('div');
+    card.className='q-card';card.id='qcard-'+q.num;
+    const cHTML=q.choices.map(ch=>`
+      <label class="choice-label" id="choice-${q.num}-${ch.key}" onclick="pick(${q.num},'${ch.key}',this)">
+        <input type="radio" name="q${q.num}">
+        <span class="choice-marker">✓</span>
+        <span><strong>${ch.key}.</strong> <span class="choice-poem">${ch.text.replace(/\n/g,'<br>')}</span></span>
+      </label>`).join('');
+    card.innerHTML=`<div class="q-header"><div class="q-num">${q.num}</div><span class="answered-badge" id="badge-${q.num}"></span></div>
+      <div class="q-text">${q.text}</div>${q.poem||''}
+      <div class="choices">${cHTML}</div>`;
+    c.appendChild(card);
+  });
+}
+
+function pick(qNum,key,lbl){
+  if(submitted)return;
+  document.querySelectorAll('[id^="choice-'+qNum+'-"]').forEach(el=>el.classList.remove('selected'));
+  lbl.classList.add('selected');userAnswers[qNum]=key;
+  document.getElementById('qcard-'+qNum).classList.add('answered');
+  updateProg();
+}
+
+function updateProg(){
+  const n=Object.keys(userAnswers).length;
+  document.getElementById('progressText').textContent='ตอบแล้ว '+n+' / '+TOTAL+' ข้อ';
+  document.getElementById('progressBar').style.width=(n/TOTAL*100)+'%';
+}
+
+// ================================================================
+// SUBMIT
+// ================================================================
+function submitQuiz(){
+  const vm=document.getElementById('validMsg');
+  if(!currentStudent){vm.style.display='block';vm.textContent='⚠ กรุณาเลือกชั้นเรียนและเลขที่ก่อน';return;}
+  const ans=Object.keys(userAnswers).length;
+  if(ans<TOTAL){
+    vm.style.display='block';vm.textContent='⚠ กรุณาตอบให้ครบ (ยังขาด '+(TOTAL-ans)+' ข้อ)';
+    for(let i=1;i<=TOTAL;i++){if(!userAnswers[i]){document.getElementById('qcard-'+i).scrollIntoView({behavior:'smooth',block:'center'});break;}}
+    return;
+  }
+  vm.style.display='none';submitted=true;
+  let score=0;
+  questions.forEach(q=>{
+    const correct=ANSWER_KEY[q.num],given=userAnswers[q.num];
+    const card=document.getElementById('qcard-'+q.num),badge=document.getElementById('badge-'+q.num);
+    q.choices.forEach(c=>{
+      const lbl=document.getElementById('choice-'+q.num+'-'+c.key);
+      if(c.key===given&&given!==correct)lbl.classList.add('show-wrong');
+    });
+    if(given===correct){score++;card.classList.remove('answered');card.classList.add('correct');badge.className='answered-badge show correct-badge';badge.textContent='✓ ถูก';}
+    else{card.classList.remove('answered');card.classList.add('wrong');badge.className='answered-badge show wrong-badge';badge.textContent='✗ ผิด';}
+  });
+  finalScore=score;
+  const pct=Math.round(score/TOTAL*100);
+  const scaled=(score/TOTAL*2.5).toFixed(2);
+
+  // LOCK — บันทึก localStorage
+  try{localStorage.setItem(sKey(currentStudent.cls,currentStudent.num),JSON.stringify({score,pct,scaled,name:currentStudent.name,cls:currentStudent.cls,num:currentStudent.num,ts:Date.now()}));}catch(e){}
+
+  // Lock selectors
+  document.getElementById('studentClass').disabled=true;
+  document.getElementById('studentNum').disabled=true;
+  document.getElementById('submitBtn').disabled=true;
+
+  // Prevent page reload/close accidentally
+  window._quizDone=true;
+
+  // Build wrong list
+  const wrongNums=[];
+  questions.forEach(q=>{if(userAnswers[q.num]!==ANSWER_KEY[q.num])wrongNums.push(q.num);});
+  const wrongSummary=document.getElementById('modalWrongSummary');
+  if(wrongNums.length===0){
+    wrongSummary.style.display='none';
+  } else {
+    wrongSummary.className='modal-wrong-summary show';
+    wrongSummary.innerHTML='<strong>ข้อที่ตอบผิด ('+wrongNums.length+' ข้อ):</strong><br>ข้อที่ '+wrongNums.join(', ');
+  }
+
+  document.getElementById('modalScore').textContent=score;
+  document.getElementById('modalFull').textContent='คะแนนเต็ม '+TOTAL+' ข้อ  =  2.5 คะแนน';
+  document.getElementById('modalPct').textContent=scaled+' / 2.5 คะแนน  ('+pct+'%)';
+  document.getElementById('modalName').textContent=currentStudent.name+'  เลขที่ '+currentStudent.num;
+  document.getElementById('modalClass').textContent='ชั้น '+currentStudent.cls;
+  // สร้างลิงก์ส่งคะแนน
+  const scoreUrl = 'https://kru-ly.github.io/scorethai169/'
+    + '?unit=1&topic=กาพย์เห่เรือ&quiz=สอบท้ายหน่วย1'
+    + '&name=' + encodeURIComponent(currentStudent.name)
+    + '&class=' + encodeURIComponent(currentStudent.cls)
+    + '&num=' + currentStudent.num
+    + '&score=' + score
+    + '&full=' + TOTAL
+    + '&scaled=' + scaled
+    + '&pct=' + pct;
+  const link = document.getElementById('scoreLink');
+  link.href = scoreUrl;
+
+  // นับถอยหลัง 5 วินาทีแล้ว redirect อัตโนมัติ
+  let sec = 5;
+  const cd = document.getElementById('redirectCountdown');
+  cd.textContent = '⏱ ระบบจะส่งคะแนนให้ครูอัตโนมัติใน ' + sec + ' วินาที...';
+  const timer = setInterval(function(){
+    sec--;
+    if(sec > 0){
+      cd.textContent = '⏱ ระบบจะส่งคะแนนให้ครูอัตโนมัติใน ' + sec + ' วินาที...';
+    } else {
+      clearInterval(timer);
+      cd.textContent = '✅ กำลังส่งคะแนน...';
+      window.location.href = scoreUrl;
+    }
+  }, 1000);
+
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function reviewWrong(){
+  document.getElementById('modalOverlay').classList.remove('show');
+  const w=document.querySelectorAll('.q-card.wrong');
+  if(w.length)w[0].scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+// ================================================================
+// PREVENT RELOAD AFTER SUBMIT
+// ================================================================
+window._quizDone=false;
+window.addEventListener('beforeunload',function(e){
+  if(window._quizDone){e.preventDefault();e.returnValue='คุณได้ทำแบบทดสอบเสร็จแล้ว หากออกจากหน้านี้จะไม่สามารถกลับมาแก้ไขได้';}
+});
+
+// INIT
+buildQuiz();updateProg();
+</script>
+</body>
+</html>
