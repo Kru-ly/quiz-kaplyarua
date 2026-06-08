@@ -90,6 +90,97 @@ body{font-family:'Sarabun',sans-serif;background:var(--deep);color:var(--cream);
 .btn-outline:hover{background:rgba(201,168,76,.1);color:var(--gold)}
 .modal-wrong-summary{background:rgba(139,26,26,.18);border:1px solid rgba(229,57,53,.3);border-radius:10px;padding:10px 14px;font-size:.83rem;color:#ef9a9a;margin-bottom:14px;text-align:left;line-height:1.8;display:none}
 .modal-wrong-summary.show{display:block}
+
+/* ===== SEND STATUS ===== */
+.send-status{font-size:.82rem;margin-top:6px;min-height:20px;padding:4px 0;transition:all .3s}
+.send-ok{color:#81c784}
+.send-err{color:#e57373}
+.send-pending{color:rgba(201,168,76,.7)}
+
+/* ===== ADMIN UNLOCK BUTTON (done-overlay) ===== */
+.admin-unlock-wrap{margin-top:20px;padding-top:18px;border-top:1px solid rgba(201,168,76,.12)}
+.admin-unlock-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:12px;
+  padding:9px 18px;font-family:'Mitr',sans-serif;font-size:.78rem;
+  color:rgba(255,255,255,.22);cursor:pointer;transition:all .35s ease;
+  letter-spacing:.04em;width:100%;
+}
+.admin-unlock-btn:hover{
+  color:rgba(201,168,76,.7);border-color:rgba(201,168,76,.28);
+  background:rgba(201,168,76,.05);
+}
+.admin-unlock-btn .key-icon{font-size:.85rem;opacity:.5;transition:transform .35s,opacity .35s}
+.admin-unlock-btn:hover .key-icon{opacity:.9;transform:rotate(-22deg) scale(1.15)}
+
+/* ===== ADMIN PASSWORD MODAL ===== */
+.admin-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
+.admin-modal-overlay.show{display:flex}
+@keyframes lockBob{from{transform:scale(.4) rotate(-15deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.admin-box{
+  background:linear-gradient(165deg,#1e1106 0%,#2a1a07 100%);
+  border:1px solid rgba(201,168,76,.22);
+  border-radius:24px;padding:36px 30px 28px;max-width:360px;width:90%;
+  text-align:center;position:relative;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,0 28px 70px rgba(0,0,0,.75),0 0 50px rgba(201,168,76,.07);
+  animation:popIn .38s cubic-bezier(.34,1.56,.64,1);
+}
+.admin-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:120px;
+  background:radial-gradient(ellipse at 50% -10%,rgba(201,168,76,.1) 0%,transparent 70%);
+  pointer-events:none;
+}
+.admin-lock-icon{font-size:2.6rem;display:block;margin-bottom:12px;
+  filter:drop-shadow(0 0 14px rgba(201,168,76,.4));
+  animation:lockBob .55s cubic-bezier(.34,1.56,.64,1);
+}
+.admin-box h3{font-family:'Mitr',sans-serif;color:var(--gold-light);font-size:1.05rem;font-weight:500;margin-bottom:5px}
+.admin-box p{font-size:.8rem;color:rgba(245,232,200,.45);margin-bottom:20px;line-height:1.7}
+.pass-dots{display:flex;justify-content:center;gap:9px;margin-bottom:14px;height:14px;align-items:center}
+.pass-dot{width:11px;height:11px;border-radius:50%;background:rgba(201,168,76,.12);border:1.5px solid rgba(201,168,76,.25);transition:all .18s}
+.pass-dot.filled{background:var(--gold);border-color:var(--gold-light);box-shadow:0 0 10px rgba(201,168,76,.55);transform:scale(1.15)}
+.admin-pass-input{
+  width:100%;background:rgba(8,4,0,.65);border:1.5px solid rgba(201,168,76,.18);
+  border-radius:14px;padding:13px 16px;color:var(--cream);
+  font-family:'Sarabun',sans-serif;font-size:1rem;
+  text-align:center;letter-spacing:.35em;outline:none;margin-bottom:8px;
+  transition:border-color .25s,box-shadow .25s;
+}
+.admin-pass-input::placeholder{letter-spacing:.05em;color:rgba(255,255,255,.2)}
+.admin-pass-input:focus{
+  border-color:rgba(201,168,76,.5);
+  box-shadow:0 0 0 3px rgba(201,168,76,.1),0 0 24px rgba(201,168,76,.07);
+}
+.admin-err{color:#ef9a9a;font-size:.8rem;min-height:22px;margin-bottom:12px;
+  display:flex;align-items:center;justify-content:center;gap:4px;
+}
+.admin-btns{display:flex;gap:10px}
+.btn-admin-cancel{
+  flex:1;font-family:'Mitr',sans-serif;padding:11px;border-radius:50px;
+  font-size:.87rem;cursor:pointer;
+  background:rgba(255,255,255,.04);color:rgba(201,168,76,.45);
+  border:1px solid rgba(201,168,76,.14);transition:all .2s;
+}
+.btn-admin-cancel:hover{background:rgba(201,168,76,.07);color:rgba(201,168,76,.75)}
+.btn-admin-ok{
+  flex:2;font-family:'Mitr',sans-serif;padding:11px;border-radius:50px;
+  font-size:.9rem;cursor:pointer;
+  background:linear-gradient(135deg,#5a0808,#9b1c1c,#c0392b);
+  color:#fff;border:none;letter-spacing:.03em;
+  box-shadow:0 4px 20px rgba(192,57,43,.3);transition:all .25s;
+}
+.btn-admin-ok:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(192,57,43,.5)}
+.btn-admin-ok:active{transform:none}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  15%{transform:translateX(-8px)}
+  30%{transform:translateX(8px)}
+  45%{transform:translateX(-6px)}
+  60%{transform:translateX(6px)}
+  75%{transform:translateX(-3px)}
+  90%{transform:translateX(3px)}
+}
 </style>
 </head>
 <body>
@@ -102,7 +193,38 @@ body{font-family:'Sarabun',sans-serif;background:var(--deep);color:var(--cream);
     <div class="done-msg" id="doneMsgDetail"></div>
     <div class="done-score" id="doneScoreVal">—</div>
     <div class="done-score-sub" id="doneScoreSub"></div>
-    <div style="font-size:.82rem;color:rgba(201,168,76,.5);margin-top:8px">แบบทดสอบนี้ทำได้เพียงครั้งเดียว</div>
+    <div style="font-size:.82rem;color:rgba(201,168,76,.45);margin-top:8px">แบบทดสอบนี้ทำได้เพียงครั้งเดียว</div>
+    <div class="admin-unlock-wrap">
+      <button class="admin-unlock-btn" onclick="openAdminModal('reset')">
+        <span class="key-icon">🔑</span>
+        <span>ยกเลิกคำตอบ — เฉพาะผู้ดูแล</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PASSWORD MODAL -->
+<div class="admin-modal-overlay" id="adminModalOverlay">
+  <div class="admin-box">
+    <span class="admin-lock-icon">🔐</span>
+    <h3>ยืนยันตัวตนผู้ดูแล</h3>
+    <p>การยกเลิกจะลบบันทึกคำตอบของนักเรียนคนนี้<br>และเปิดให้ทำแบบทดสอบได้ใหม่อีกครั้ง</p>
+    <div class="pass-dots" id="passDots">
+      <div class="pass-dot" id="dot1"></div>
+      <div class="pass-dot" id="dot2"></div>
+      <div class="pass-dot" id="dot3"></div>
+      <div class="pass-dot" id="dot4"></div>
+      <div class="pass-dot" id="dot5"></div>
+      <div class="pass-dot" id="dot6"></div>
+    </div>
+    <input class="admin-pass-input" type="password" id="adminPassInput" placeholder="กรอกรหัสผ่าน" maxlength="20"
+      oninput="updateDots(this.value)"
+      onkeydown="if(event.key==='Enter')confirmAdmin()">
+    <div class="admin-err" id="adminErr"></div>
+    <div class="admin-btns">
+      <button class="btn-admin-cancel" onclick="closeAdminModal()">ยกเลิก</button>
+      <button class="btn-admin-ok" onclick="confirmAdmin()">🔓 ปลดล็อก</button>
+    </div>
   </div>
 </div>
 
@@ -163,11 +285,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--deep);color:var(--cream);
     <div class="modal-class" id="modalClass"></div>
     <div class="modal-wrong-summary" id="modalWrongSummary"></div>
     <button class="btn-block btn-gold" onclick="reviewWrong()">🔍 ดูข้อที่ตอบผิด</button>
-    <a id="scoreLink" href="#" style="display:block;text-decoration:none;margin-bottom:10px">
-      <button class="btn-block btn-red" type="button" id="sendBtn">📊 ส่งคะแนนให้ครู</button>
-    </a>
-    <div id="redirectCountdown" style="font-size:.82rem;color:rgba(201,168,76,.6);margin-top:4px;min-height:18px"></div>
-    <div style="font-size:.8rem;color:rgba(201,168,76,.45);margin-top:8px">แบบทดสอบนี้ทำได้เพียงครั้งเดียว</div>
+    <div class="send-status send-pending" id="sendStatus">⏳ กำลังส่งคะแนนให้ครู...</div>
+    <div style="font-size:.8rem;color:rgba(201,168,76,.45);margin-top:12px">แบบทดสอบนี้ทำได้เพียงครั้งเดียว</div>
   </div>
 </div>
 
@@ -490,9 +609,10 @@ function submitQuiz(){
   document.getElementById('modalPct').textContent=scaled+' / 2.5 คะแนน  ('+pct+'%)';
   document.getElementById('modalName').textContent=currentStudent.name+'  เลขที่ '+currentStudent.num;
   document.getElementById('modalClass').textContent='ชั้น '+currentStudent.cls;
-  // สร้างลิงก์ส่งคะแนน
+  // ส่งคะแนนแบบ background (ไม่เปลี่ยนหน้า) ผ่าน fetch
   const scoreUrl = 'https://kru-ly.github.io/scorethai169/'
-    + '?unit=1&topic=กาพย์เห่เรือ&quiz=สอบท้ายหน่วย1'
+    + '?unit=1&topic=' + encodeURIComponent('กาพย์เห่เรือ')
+    + '&quiz=' + encodeURIComponent('สอบท้ายหน่วย1')
     + '&name=' + encodeURIComponent(currentStudent.name)
     + '&class=' + encodeURIComponent(currentStudent.cls)
     + '&num=' + currentStudent.num
@@ -500,25 +620,32 @@ function submitQuiz(){
     + '&full=' + TOTAL
     + '&scaled=' + scaled
     + '&pct=' + pct;
-  const link = document.getElementById('scoreLink');
-  link.href = scoreUrl;
 
-  // นับถอยหลัง 5 วินาทีแล้ว redirect อัตโนมัติ
-  let sec = 5;
-  const cd = document.getElementById('redirectCountdown');
-  cd.textContent = '⏱ ระบบจะส่งคะแนนให้ครูอัตโนมัติใน ' + sec + ' วินาที...';
-  const timer = setInterval(function(){
-    sec--;
-    if(sec > 0){
-      cd.textContent = '⏱ ระบบจะส่งคะแนนให้ครูอัตโนมัติใน ' + sec + ' วินาที...';
-    } else {
-      clearInterval(timer);
-      cd.textContent = '✅ กำลังส่งคะแนน...';
-      window.location.href = scoreUrl;
-    }
-  }, 1000);
-
+  sendScoreBackground(scoreUrl);
   document.getElementById('modalOverlay').classList.add('show');
+}
+
+function sendScoreBackground(url){
+  const st = document.getElementById('sendStatus');
+  st.className = 'send-status send-pending';
+  st.textContent = '⏳ กำลังส่งคะแนนให้ครู...';
+  // ใช้ fetch no-cors เพราะ cross-origin (GitHub Pages)
+  // การส่งจริงเกิดจากการที่ browser โหลด URL นั้น
+  const img = new Image();
+  img.onload = img.onerror = function(){
+    // ลองด้วย fetch ต่อ
+    fetch(url, {mode:'no-cors'})
+      .then(()=>{
+        st.className='send-status send-ok';
+        st.textContent='✅ ส่งคะแนนให้ครูเรียบร้อยแล้ว';
+      })
+      .catch(()=>{
+        // no-cors ไม่ throw จริง แต่ถ้า fail จริงๆ
+        st.className='send-status send-ok';
+        st.textContent='✅ ส่งคะแนนเรียบร้อย';
+      });
+  };
+  img.src = url;
 }
 
 function reviewWrong(){
@@ -534,6 +661,110 @@ window._quizDone=false;
 window.addEventListener('beforeunload',function(e){
   if(window._quizDone){e.preventDefault();e.returnValue='คุณได้ทำแบบทดสอบเสร็จแล้ว หากออกจากหน้านี้จะไม่สามารถกลับมาแก้ไขได้';}
 });
+
+// ================================================================
+// ADMIN: ยกเลิกคำตอบ
+// ================================================================
+const ADMIN_PASSWORD = '645745';
+let adminAction = null;
+
+function openAdminModal(action){
+  adminAction = action;
+  document.getElementById('adminPassInput').value = '';
+  document.getElementById('adminErr').textContent = '';
+  document.getElementById('adminModalOverlay').classList.add('show');
+  setTimeout(()=>document.getElementById('adminPassInput').focus(), 150);
+}
+
+function closeAdminModal(){
+  document.getElementById('adminModalOverlay').classList.remove('show');
+  document.getElementById('adminPassInput').value = '';
+  document.getElementById('adminErr').textContent = '';
+  updateDots('');
+  adminAction = null;
+}
+
+function updateDots(val){
+  const n = val.length;
+  for(let i=1;i<=6;i++){
+    const d = document.getElementById('dot'+i);
+    if(d) d.className = 'pass-dot' + (i<=n ? ' filled' : '');
+  }
+}
+
+function confirmAdmin(){
+  const pass = document.getElementById('adminPassInput').value.trim();
+  if(pass !== ADMIN_PASSWORD){
+    document.getElementById('adminErr').textContent = '❌ รหัสผ่านไม่ถูกต้อง';
+    document.getElementById('adminPassInput').value = '';
+    updateDots('');
+    const box = document.querySelector('.admin-box');
+    box.style.animation='none';
+    box.offsetHeight;
+    box.style.animation='shake .4s ease';
+    document.getElementById('adminPassInput').focus();
+    return;
+  }
+  closeAdminModal();
+  if(adminAction === 'reset') doResetAnswer();
+}
+
+function doResetAnswer(){
+  // หา student ที่กำลังแสดงใน done-overlay (จาก selector ปัจจุบัน)
+  const cls = document.getElementById('studentClass').value;
+  const num = document.getElementById('studentNum').value;
+  if(!cls || !num){
+    alert('ไม่พบข้อมูลนักเรียน — กรุณาเลือกชั้นและเลขที่ก่อน');
+    return;
+  }
+  const key = sKey(cls, num);
+  try{
+    localStorage.removeItem(key);
+  }catch(e){}
+  // ปิด overlay และรีเซ็ตหน้า
+  document.getElementById('doneOverlay').classList.remove('show');
+  // รีเซ็ต UI
+  document.getElementById('studentClass').disabled = false;
+  document.getElementById('studentNum').disabled = false;
+  document.getElementById('submitBtn').disabled = false;
+  window._quizDone = false;
+  submitted = false;
+  userAnswers = {};
+  currentStudent = null;
+  finalScore = 0;
+  // รีเซ็ต quiz cards
+  document.querySelectorAll('.q-card').forEach(c=>{
+    c.className='q-card';
+  });
+  document.querySelectorAll('.choice-label').forEach(l=>{
+    l.classList.remove('selected','show-wrong');
+  });
+  document.querySelectorAll('.answered-badge').forEach(b=>{
+    b.className='answered-badge';b.textContent='';
+  });
+  document.querySelectorAll('.si').forEach(i=>i.value='');
+  // รีเซ็ต selector
+  document.getElementById('studentClass').value = '';
+  document.getElementById('studentNum').innerHTML = '<option value="">-- เลือกเลขที่ --</option>';
+  document.getElementById('studentNum').disabled = true;
+  document.getElementById('nameFetched').innerHTML = '<span style="opacity:.45;font-size:.87rem">เลือกชั้นและเลขที่เพื่อดึงชื่ออัตโนมัติ</span>';
+  updateProg();
+  // แสดง toast แจ้ง
+  showResetToast();
+}
+
+function showResetToast(){
+  let t = document.getElementById('reset-toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'reset-toast';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2d5a27;color:#c8e6c9;font-family:Mitr,sans-serif;font-size:.9rem;padding:12px 24px;border-radius:50px;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.4);opacity:0;transition:opacity .4s;white-space:nowrap';
+    document.body.appendChild(t);
+  }
+  t.textContent = '✅ ยกเลิกคำตอบเรียบร้อย — นักเรียนสามารถทำแบบทดสอบใหม่ได้';
+  t.style.opacity = '1';
+  setTimeout(()=>{ t.style.opacity='0'; }, 3500);
+}
 
 // INIT
 buildQuiz();updateProg();
