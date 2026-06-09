@@ -172,6 +172,47 @@ body{font-family:'Sarabun',sans-serif;background:var(--deep);color:var(--cream);
 .btn-admin-ok:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(192,57,43,.5)}
 .btn-admin-ok:active{transform:none}
 
+
+/* ===== UNLOCK SUCCESS POPUP ===== */
+.unlock-success-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(10,5,0,.88);
+  z-index:300;
+  align-items:center;justify-content:center;
+  backdrop-filter:blur(6px);
+}
+.unlock-success-overlay.show{display:flex}
+.unlock-success-box{
+  background:linear-gradient(160deg,#0f2d1a,#1a3d22);
+  border:2px solid #4ade80;
+  border-radius:24px;
+  padding:44px 36px 36px;
+  max-width:380px;width:90%;
+  text-align:center;
+  box-shadow:0 0 60px rgba(74,222,128,.25),0 0 120px rgba(74,222,128,.08);
+  animation:popIn .45s cubic-bezier(.34,1.56,.64,1);
+}
+.unlock-success-icon{font-size:3.8rem;margin-bottom:12px;display:block;animation:bounceIn .6s .1s both}
+@keyframes bounceIn{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.unlock-success-title{
+  font-family:'Mitr',sans-serif;font-size:1.4rem;
+  color:#86efac;font-weight:600;margin-bottom:8px;
+}
+.unlock-success-msg{
+  font-size:.93rem;color:rgba(220,252,231,.8);
+  line-height:1.75;margin-bottom:28px;
+}
+.unlock-success-msg strong{color:#4ade80}
+.btn-unlock-ok{
+  font-family:'Mitr',sans-serif;font-size:1rem;font-weight:500;
+  background:linear-gradient(135deg,#16a34a,#4ade80);
+  color:#052e16;border:none;border-radius:50px;
+  padding:13px 50px;cursor:pointer;
+  box-shadow:0 4px 20px rgba(74,222,128,.35);
+  transition:all .2s;letter-spacing:.04em;
+}
+.btn-unlock-ok:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(74,222,128,.5)}
+
 @keyframes shake{
   0%,100%{transform:translateX(0)}
   15%{transform:translateX(-8px)}
@@ -200,6 +241,19 @@ body{font-family:'Sarabun',sans-serif;background:var(--deep);color:var(--cream);
         <span>ยกเลิกคำตอบ — เฉพาะผู้ดูแล</span>
       </button>
     </div>
+  </div>
+</div>
+
+<!-- UNLOCK SUCCESS POPUP -->
+<div class="unlock-success-overlay" id="unlockSuccessOverlay">
+  <div class="unlock-success-box">
+    <span class="unlock-success-icon">✅</span>
+    <div class="unlock-success-title">ยกเลิกคำตอบสำเร็จ</div>
+    <div class="unlock-success-msg" id="unlockSuccessMsg">
+      ยกเลิกคำตอบของนักเรียนเรียบร้อยแล้ว<br>
+      <strong>กดตกลงเพื่อกลับสู่หน้าแบบทดสอบ</strong>
+    </div>
+    <button class="btn-unlock-ok" onclick="doUnlockAndReload()">ตกลง — เริ่มทำใหม่</button>
   </div>
 </div>
 
@@ -506,6 +560,11 @@ function onNumChange(){
 }
 
 function checkDone(cls,num,name){
+  // ถ้า admin ปลดล็อกคนนี้ไว้ → ลบ key ก่อน แล้วแสดงข้อความแจ้งนักเรียน
+  if(checkAndApplyUnlock(cls, num)){
+    showResetToast();
+    return;
+  }
   let saved;
   try{saved=localStorage.getItem(sKey(cls,num));}catch(e){return;}
   if(!saved)return;
@@ -712,64 +771,75 @@ function confirmAdmin(){
   if(adminAction === 'reset') doResetAnswer(cls, num);
 }
 
+// เก็บ cls/num ที่จะ unlock ไว้ใช้ตอน reload
+let _pendingUnlock = null;
+
 function doResetAnswer(targetCls, targetNum){
-  // รับค่าจาก parameter (กรณีปลดล็อกจาก index) หรือจาก selector ปัจจุบัน
   const cls = targetCls || document.getElementById('studentClass').value;
   const num = targetNum  || document.getElementById('studentNum').value;
   if(!cls || !num){
     alert('ไม่พบข้อมูลนักเรียน — กรุณาเลือกชั้นและเลขที่ก่อน');
     return;
   }
+
+  // หาชื่อนักเรียน
+  const stuName = (STUDENTS[cls]||[]).find(x=>String(x.num)===String(num))?.name || '';
+
   // ลบ localStorage ของนักเรียนคนนั้น
   try{ localStorage.removeItem(sKey(cls, num)); }catch(e){}
 
-  // ปิด overlay
+  // ปิด done-overlay และ admin modal
   document.getElementById('doneOverlay').classList.remove('show');
+  closeAdminModal();
 
-  // รีเซ็ต state
-  window._quizDone = false;
-  submitted = false;
-  userAnswers = {};
-  finalScore = 0;
-  currentStudent = null;
+  // อัปเดตข้อความ popup
+  const msgEl = document.getElementById('unlockSuccessMsg');
+  if(msgEl && stuName){
+    msgEl.innerHTML = 'ยกเลิกคำตอบของ <strong>' + stuName + '</strong><br>' +
+                      '(' + cls + ' เลขที่ ' + num + ') เรียบร้อยแล้ว<br><br>' +
+                      '<strong>กดตกลงเพื่อกลับสู่หน้าแบบทดสอบ</strong>';
+  }
 
-  // รีเซ็ต quiz cards
-  document.querySelectorAll('.q-card').forEach(c=>{ c.className='q-card'; });
-  document.querySelectorAll('.choice-label').forEach(l=>{ l.classList.remove('selected','show-wrong'); });
-  document.querySelectorAll('.answered-badge').forEach(b=>{ b.className='answered-badge'; b.textContent=''; });
+  // เก็บ pending ไว้เผื่อใช้หลัง reload
+  _pendingUnlock = { cls, num };
 
-  // รีเซ็ต selector แล้ว auto-select นักเรียนคนที่ปลดล็อก
-  const clsSel = document.getElementById('studentClass');
-  const numSel = document.getElementById('studentNum');
-  clsSel.disabled = false;
-  numSel.disabled = false;
-  document.getElementById('submitBtn').disabled = false;
+  // แสดง success popup
+  document.getElementById('unlockSuccessOverlay').classList.add('show');
+}
 
-  // Set ชั้น
-  clsSel.value = cls;
-  onClassChange();   // เติม dropdown เลขที่
-
-  // Set เลขที่ หลัง onClassChange flush DOM
-  setTimeout(()=>{
-    numSel.value = num;
-    onNumChange();   // ดึงชื่อ + checkDone (จะไม่ popup เพราะเพิ่ง removeItem)
-    updateProg();
-    showResetToast();
-    window.scrollTo({top:0, behavior:'smooth'});
-  }, 80);
+function doUnlockAndReload(){
+  // reload หน้าตรงๆ — หน้าจะสะอาด นักเรียนเลือกชื่อแล้วทำได้เลย
+  location.reload();
 }
 
 function showResetToast(){
-  let t = document.getElementById('reset-toast');
-  if(!t){
-    t = document.createElement('div');
-    t.id = 'reset-toast';
-    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2d5a27;color:#c8e6c9;font-family:Mitr,sans-serif;font-size:.9rem;padding:12px 24px;border-radius:50px;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.4);opacity:0;transition:opacity .4s;white-space:nowrap';
-    document.body.appendChild(t);
+  // แบนเนอร์สีเขียวใต้ selector — ชัดกว่า toast เล็ก
+  let banner = document.getElementById('unlock-banner');
+  if(!banner){
+    banner = document.createElement('div');
+    banner.id = 'unlock-banner';
+    banner.style.cssText = [
+      'display:flex;align-items:center;gap:10px',
+      'margin:12px auto 0',
+      'max-width:680px',
+      'background:#dcfce7',
+      'border:1.5px solid #86efac',
+      'border-radius:12px',
+      'padding:12px 18px',
+      'font-family:Mitr,sans-serif',
+      'font-size:.92rem',
+      'color:#15803d',
+      'font-weight:500',
+      'box-shadow:0 2px 10px rgba(0,0,0,.06)',
+      'animation:fadeIn .4s ease'
+    ].join(';');
+    // วางหลัง selector-card (กล่องเลือกชั้น/เลขที่)
+    const selector = document.querySelector('.selector-card') || document.querySelector('.quiz-header') || document.body;
+    selector.insertAdjacentElement('afterend', banner);
   }
-  t.textContent = '✅ ยกเลิกคำตอบเรียบร้อย — นักเรียนสามารถทำแบบทดสอบใหม่ได้';
-  t.style.opacity = '1';
-  setTimeout(()=>{ t.style.opacity='0'; }, 3500);
+  banner.innerHTML = '✅ <strong>ยกเลิกคำตอบเรียบร้อยแล้ว</strong> — คุณสามารถเริ่มทำแบบทดสอบใหม่ได้เลย';
+  banner.style.display = 'flex';
+  setTimeout(()=>{ if(banner) banner.style.display='none'; }, 7000);
 }
 
 // INIT
@@ -777,26 +847,32 @@ buildQuiz();
 updateProg();
 
 // ================================================================
-// รับสัญญาณปลดล็อกจากหน้าคะแนนเก็บ ผ่าน localStorage storage event
-// เมื่อ admin กด "ยกเลิก" ใน index.html → เขียน quiz_unlock → quiz.html รับทันที
+// ตรวจสอบ quiz_unlock ที่ admin เขียนไว้จาก index.html
+// เรียกทุกครั้งที่นักเรียนเลือกชั้น/เลขที่ และตอน page load
+// ถ้าพบ unlock ที่ตรงกับนักเรียนคนนี้ → ลบ quiz key ทิ้ง → ทำใหม่ได้เลย
 // ================================================================
-window.addEventListener('storage', function(e){
-  if(e.key !== 'quiz_unlock' || !e.newValue) return;
-
+function checkAndApplyUnlock(cls, num){
   let payload;
-  try{ payload = JSON.parse(e.newValue); }catch(err){ return; }
+  try{
+    const raw = localStorage.getItem('quiz_unlock');
+    if(!raw) return false;
+    payload = JSON.parse(raw);
+  }catch(e){ return false; }
 
-  const { cls, num, ts } = payload;
+  const { cls: uCls, num: uNum, ts } = payload;
 
-  // ป้องกัน signal เก่า (> 15 วิ)
-  if(!cls || !num || Date.now() - ts > 15000) return;
+  // ตรวจว่าตรงกับนักเรียนคนนี้ และ signal ไม่เก่าเกิน 10 นาที
+  if(uCls !== cls || String(uNum) !== String(num)) return false;
+  if(Date.now() - ts > 600000) {
+    localStorage.removeItem('quiz_unlock');
+    return false;
+  }
 
-  // ลบ quiz localStorage ของนักเรียนคนนั้น
-  try{ localStorage.removeItem(sKey(cls, num)); }catch(err){}
-
-  // รีเซ็ต UI แล้ว auto-select นักเรียนคนนั้น
-  doResetAnswer(cls, num);
-});
+  // ตรงแล้ว — ลบ quiz key และ unlock signal
+  try{ localStorage.removeItem(sKey(cls, num)); }catch(e){}
+  localStorage.removeItem('quiz_unlock');
+  return true;
+}
 </script>
 </body>
 </html>
