@@ -222,6 +222,173 @@ body{font-family:'Sarabun',sans-serif;background:var(--deep);color:var(--cream);
   75%{transform:translateX(-3px)}
   90%{transform:translateX(3px)}
 }
+
+/* ===== ADMIN PANEL BUTTON (fixed corner) ===== */
+.admin-fab{
+  position:fixed;bottom:22px;right:22px;z-index:150;
+  width:48px;height:48px;border-radius:50%;
+  background:rgba(26,14,5,.85);border:1.5px solid rgba(201,168,76,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;cursor:pointer;
+  box-shadow:0 4px 18px rgba(0,0,0,.45);
+  transition:all .25s;backdrop-filter:blur(8px);
+  color:rgba(201,168,76,.45);
+}
+.admin-fab:hover{
+  border-color:rgba(201,168,76,.6);color:var(--gold);
+  background:rgba(45,26,7,.95);
+  box-shadow:0 6px 24px rgba(201,168,76,.2);
+  transform:translateY(-2px);
+}
+
+/* ===== ADMIN MAIN PANEL OVERLAY ===== */
+.admin-panel-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.88);z-index:400;
+  align-items:flex-start;justify-content:center;
+  backdrop-filter:blur(10px);overflow-y:auto;padding:20px 16px 40px;
+}
+.admin-panel-overlay.show{display:flex}
+.admin-panel{
+  background:linear-gradient(165deg,#1a0e05,#2a1a07);
+  border:1.5px solid rgba(201,168,76,.3);
+  border-radius:24px;
+  width:100%;max-width:520px;
+  padding:30px 28px 28px;
+  position:relative;
+  box-shadow:0 0 80px rgba(0,0,0,.8),0 0 40px rgba(201,168,76,.08);
+  animation:popIn .38s cubic-bezier(.34,1.56,.64,1);
+  margin:auto;
+}
+.admin-panel-header{
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid rgba(201,168,76,.18);
+  padding-bottom:16px;margin-bottom:22px;
+}
+.admin-panel-icon{font-size:2rem;filter:drop-shadow(0 0 10px rgba(201,168,76,.4))}
+.admin-panel-title{font-family:'Mitr',sans-serif;font-size:1.1rem;color:var(--gold-light);font-weight:500}
+.admin-panel-sub{font-size:.78rem;color:rgba(245,232,200,.45);margin-top:2px}
+.admin-close-btn{
+  position:absolute;top:18px;right:18px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:50%;width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:rgba(255,255,255,.35);font-size:.85rem;
+  transition:all .2s;
+}
+.admin-close-btn:hover{background:rgba(201,168,76,.12);color:var(--gold);border-color:rgba(201,168,76,.3)}
+
+/* Admin auth section */
+.admin-auth-section{margin-bottom:20px}
+.admin-auth-row{display:flex;gap:10px;align-items:flex-end}
+.admin-auth-field{flex:1}
+.admin-auth-field label{display:block;font-size:.8rem;color:rgba(201,168,76,.7);margin-bottom:5px;font-family:'Mitr',sans-serif}
+.admin-auth-input{
+  width:100%;background:rgba(8,4,0,.65);border:1.5px solid rgba(201,168,76,.18);
+  border-radius:10px;padding:10px 14px;color:var(--cream);
+  font-family:'Sarabun',sans-serif;font-size:.95rem;
+  letter-spacing:.2em;outline:none;transition:border-color .25s,box-shadow .25s;
+}
+.admin-auth-input::placeholder{letter-spacing:.05em;color:rgba(255,255,255,.2)}
+.admin-auth-input:focus{border-color:rgba(201,168,76,.5);box-shadow:0 0 0 3px rgba(201,168,76,.1)}
+.btn-auth-login{
+  font-family:'Mitr',sans-serif;font-size:.88rem;padding:10px 18px;border-radius:10px;
+  border:none;cursor:pointer;white-space:nowrap;
+  background:linear-gradient(135deg,var(--gold-dark),var(--gold-light));
+  color:var(--deep);font-weight:500;transition:all .2s;
+  box-shadow:0 3px 12px rgba(201,168,76,.25);
+}
+.btn-auth-login:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(201,168,76,.35)}
+.admin-auth-err{color:#ef9a9a;font-size:.78rem;margin-top:6px;min-height:18px}
+.admin-logged-bar{
+  display:none;align-items:center;gap:10px;
+  background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.25);
+  border-radius:10px;padding:10px 14px;margin-bottom:16px;
+  font-size:.85rem;color:#86efac;
+}
+.admin-logged-bar.show{display:flex}
+.admin-logged-bar .logout-link{
+  margin-left:auto;font-size:.75rem;color:rgba(74,222,128,.55);
+  cursor:pointer;text-decoration:underline;
+}
+.admin-logged-bar .logout-link:hover{color:#86efac}
+
+/* Student search */
+.admin-search-section{display:none}
+.admin-search-section.show{display:block}
+.admin-search-label{
+  font-family:'Mitr',sans-serif;font-size:.88rem;color:var(--gold);
+  margin-bottom:12px;display:flex;align-items:center;gap:6px;
+}
+.admin-search-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+@media(max-width:420px){.admin-search-row{grid-template-columns:1fr}}
+.admin-sel{
+  width:100%;background:rgba(26,14,5,.7);border:1.5px solid rgba(201,168,76,.25);
+  border-radius:9px;padding:9px 12px;color:var(--cream);
+  font-family:'Sarabun',sans-serif;font-size:.92rem;outline:none;
+  transition:border-color .2s;
+}
+.admin-sel:focus{border-color:rgba(201,168,76,.55)}
+.admin-sel option{background:var(--dark);color:var(--cream)}
+.admin-sel:disabled{opacity:.4}
+
+/* Student result card */
+.admin-student-card{
+  background:rgba(45,26,7,.6);border:1px solid rgba(201,168,76,.18);
+  border-radius:12px;padding:14px 16px;margin:10px 0;
+  display:none;
+}
+.admin-student-card.show{display:block}
+.admin-student-card.not-taken{border-color:rgba(201,168,76,.12);background:rgba(26,14,5,.4)}
+.admin-stu-name{font-weight:600;color:var(--cream);font-size:.97rem;margin-bottom:4px}
+.admin-stu-meta{font-size:.8rem;color:rgba(201,168,76,.6);margin-bottom:10px}
+.admin-stu-status{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.8rem;padding:4px 12px;border-radius:20px;margin-bottom:12px;
+}
+.status-done{background:rgba(229,57,53,.18);border:1px solid rgba(229,57,53,.3);color:#ef9a9a}
+.status-free{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:#86efac}
+.admin-stu-score{
+  background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);
+  border-radius:8px;padding:8px 12px;font-size:.83rem;color:rgba(245,232,200,.7);
+  margin-bottom:12px;line-height:1.8;
+}
+.btn-do-reset{
+  width:100%;font-family:'Mitr',sans-serif;font-size:.92rem;font-weight:500;
+  padding:11px;border-radius:50px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,#7f1d1d,#b91c1c,#dc2626);
+  color:#fff;letter-spacing:.03em;
+  box-shadow:0 4px 16px rgba(185,28,28,.35);transition:all .25s;
+}
+.btn-do-reset:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(185,28,28,.5)}
+.btn-do-reset:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* Bulk reset section */
+.admin-divider{border:none;border-top:1px solid rgba(201,168,76,.12);margin:20px 0}
+.admin-bulk-title{
+  font-family:'Mitr',sans-serif;font-size:.82rem;color:rgba(201,168,76,.5);
+  text-align:center;margin-bottom:14px;
+}
+.admin-class-list{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.class-chip{
+  font-family:'Mitr',sans-serif;font-size:.78rem;
+  padding:5px 12px;border-radius:20px;cursor:pointer;
+  background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);
+  color:rgba(201,168,76,.65);transition:all .2s;
+}
+.class-chip:hover{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.4);color:var(--gold)}
+.class-chip.selected{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold-light)}
+.btn-bulk-reset{
+  width:100%;font-family:'Mitr',sans-serif;font-size:.85rem;font-weight:500;
+  padding:10px;border-radius:50px;border:none;cursor:pointer;
+  background:rgba(120,53,15,.5);color:rgba(245,208,110,.7);
+  border:1px solid rgba(201,168,76,.2);transition:all .2s;
+}
+.btn-bulk-reset:hover{background:rgba(146,64,14,.7);color:var(--gold-light)}
+.btn-bulk-reset:disabled{opacity:.35;cursor:not-allowed}
+.admin-bulk-count{
+  font-size:.77rem;color:rgba(201,168,76,.45);text-align:center;margin-top:8px;min-height:18px;
+}
 </style>
 </head>
 <body>
@@ -254,6 +421,79 @@ body{font-family:'Sarabun',sans-serif;background:var(--deep);color:var(--cream);
       <strong>กดตกลงเพื่อกลับสู่หน้าแบบทดสอบ</strong>
     </div>
     <button class="btn-unlock-ok" onclick="doUnlockAndReload()">ตกลง — เริ่มทำใหม่</button>
+  </div>
+</div>
+
+<!-- ADMIN FAB -->
+<button class="admin-fab" onclick="openAdminPanel()" title="แผงควบคุมครู">🔑</button>
+
+<!-- ADMIN MAIN PANEL -->
+<div class="admin-panel-overlay" id="adminPanelOverlay">
+  <div class="admin-panel">
+    <button class="admin-close-btn" onclick="closeAdminPanel()">✕</button>
+    <div class="admin-panel-header">
+      <span class="admin-panel-icon">🛡️</span>
+      <div>
+        <div class="admin-panel-title">แผงควบคุมครู (Admin)</div>
+        <div class="admin-panel-sub">ปลดล็อกคำตอบนักเรียนรายบุคคล หรือรีเซ็ตทั้งชั้น</div>
+      </div>
+    </div>
+
+    <!-- AUTH -->
+    <div class="admin-auth-section" id="adminAuthSection">
+      <div class="admin-auth-row">
+        <div class="admin-auth-field">
+          <label>รหัสผ่านครู</label>
+          <input class="admin-auth-input" type="password" id="adminPanelPass" placeholder="รหัสผ่าน" maxlength="20"
+            onkeydown="if(event.key==='Enter')loginAdminPanel()">
+        </div>
+        <button class="btn-auth-login" onclick="loginAdminPanel()">เข้าสู่ระบบ</button>
+      </div>
+      <div class="admin-auth-err" id="adminPanelErr"></div>
+    </div>
+
+    <!-- LOGGED IN BAR -->
+    <div class="admin-logged-bar" id="adminLoggedBar">
+      🔓 <strong>เข้าสู่ระบบแล้ว</strong> — โหมดครู
+      <span class="logout-link" onclick="logoutAdminPanel()">ออกจากระบบ</span>
+    </div>
+
+    <!-- SEARCH SECTION -->
+    <div class="admin-search-section" id="adminSearchSection">
+      <div class="admin-search-label">🔍 ค้นหานักเรียน</div>
+      <div class="admin-search-row">
+        <div>
+          <label style="display:block;font-size:.78rem;color:rgba(201,168,76,.6);margin-bottom:5px;font-family:'Mitr',sans-serif">ชั้นเรียน</label>
+          <select class="admin-sel" id="adminCls" onchange="adminOnClassChange()">
+            <option value="">-- เลือกชั้น --</option>
+            <option>ม.6/1</option><option>ม.6/2</option><option>ม.6/3</option>
+            <option>ม.6/5</option><option>ม.6/11</option><option>ม.6/12</option><option>ม.6/20</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:.78rem;color:rgba(201,168,76,.6);margin-bottom:5px;font-family:'Mitr',sans-serif">เลขที่</label>
+          <select class="admin-sel" id="adminNum" onchange="adminOnNumChange()" disabled>
+            <option value="">-- เลือกเลขที่ --</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Student card -->
+      <div class="admin-student-card" id="adminStuCard">
+        <div class="admin-stu-name" id="adminStuName"></div>
+        <div class="admin-stu-meta" id="adminStuMeta"></div>
+        <div class="admin-stu-status" id="adminStuStatus"></div>
+        <div class="admin-stu-score" id="adminStuScore" style="display:none"></div>
+        <button class="btn-do-reset" id="adminResetBtn" onclick="adminDoReset()">🔓 ปลดล็อก — ล้างคำตอบของนักเรียนคนนี้</button>
+      </div>
+
+      <!-- Bulk section -->
+      <hr class="admin-divider">
+      <div class="admin-bulk-title">⚡ ปลดล็อกทั้งชั้นเรียน</div>
+      <div class="admin-class-list" id="adminClassChips"></div>
+      <button class="btn-bulk-reset" id="adminBulkBtn" onclick="adminDoBulkReset()" disabled>เลือกชั้นเรียนก่อน</button>
+      <div class="admin-bulk-count" id="adminBulkCount"></div>
+    </div>
   </div>
 </div>
 
@@ -788,28 +1028,22 @@ function doResetAnswer(targetCls, targetNum){
   // ลบ localStorage ของนักเรียนคนนั้น
   try{ localStorage.removeItem(sKey(cls, num)); }catch(e){}
 
-  // ปิด done-overlay และ admin modal
+  // ปิด done-overlay และ admin modal ทันที
   document.getElementById('doneOverlay').classList.remove('show');
   closeAdminModal();
 
-  // อัปเดตข้อความ popup
-  const msgEl = document.getElementById('unlockSuccessMsg');
-  if(msgEl && stuName){
-    msgEl.innerHTML = 'ยกเลิกคำตอบของ <strong>' + stuName + '</strong><br>' +
-                      '(' + cls + ' เลขที่ ' + num + ') เรียบร้อยแล้ว<br><br>' +
-                      '<strong>กดตกลงเพื่อกลับสู่หน้าแบบทดสอบ</strong>';
-  }
+  // รีเซ็ต quiz state ให้ทำใหม่ได้เลย (ไม่ต้อง reload)
+  _resetQuizState();
 
-  // เก็บ pending ไว้เผื่อใช้หลัง reload
-  _pendingUnlock = { cls, num };
-
-  // แสดง success popup
-  document.getElementById('unlockSuccessOverlay').classList.add('show');
+  // แสดง banner แจ้งนักเรียน
+  showResetToast();
 }
 
 function doUnlockAndReload(){
-  // reload หน้าตรงๆ — หน้าจะสะอาด นักเรียนเลือกชื่อแล้วทำได้เลย
-  location.reload();
+  // ปิด success overlay แล้วให้นักเรียนทำต่อได้เลย (ไม่ต้อง reload)
+  document.getElementById('unlockSuccessOverlay').classList.remove('show');
+  _resetQuizState();
+  showResetToast();
 }
 
 function showResetToast(){
@@ -841,6 +1075,283 @@ function showResetToast(){
   banner.style.display = 'flex';
   setTimeout(()=>{ if(banner) banner.style.display='none'; }, 7000);
 }
+
+// ================================================================
+// ADMIN PANEL (แผงควบคุมครู)
+// ================================================================
+let _adminLoggedIn = false;
+let _adminSelectedCls = null;
+let _adminSelectedNum = null;
+
+function openAdminPanel(){
+  document.getElementById('adminPanelOverlay').classList.add('show');
+  document.getElementById('adminPanelPass').value = '';
+  document.getElementById('adminPanelErr').textContent = '';
+  // ถ้า logged in อยู่แล้ว ให้แสดง search section ทันที
+  if(_adminLoggedIn) _showAdminSearch();
+  else _showAdminAuth();
+  // init class chips
+  _buildClassChips();
+}
+
+function closeAdminPanel(){
+  document.getElementById('adminPanelOverlay').classList.remove('show');
+}
+
+function loginAdminPanel(){
+  const pass = document.getElementById('adminPanelPass').value.trim();
+  if(pass !== ADMIN_PASSWORD){
+    document.getElementById('adminPanelErr').textContent = '❌ รหัสผ่านไม่ถูกต้อง';
+    document.getElementById('adminPanelPass').value = '';
+    document.getElementById('adminPanelPass').focus();
+    return;
+  }
+  _adminLoggedIn = true;
+  document.getElementById('adminPanelErr').textContent = '';
+  _showAdminSearch();
+}
+
+function logoutAdminPanel(){
+  _adminLoggedIn = false;
+  _adminSelectedCls = null;
+  _adminSelectedNum = null;
+  _showAdminAuth();
+}
+
+function _showAdminAuth(){
+  document.getElementById('adminAuthSection').style.display = 'block';
+  document.getElementById('adminLoggedBar').classList.remove('show');
+  document.getElementById('adminSearchSection').classList.remove('show');
+  setTimeout(()=>document.getElementById('adminPanelPass').focus(), 150);
+}
+
+function _showAdminSearch(){
+  document.getElementById('adminAuthSection').style.display = 'none';
+  document.getElementById('adminLoggedBar').classList.add('show');
+  document.getElementById('adminSearchSection').classList.add('show');
+}
+
+function adminOnClassChange(){
+  const cls = document.getElementById('adminCls').value;
+  _adminSelectedCls = cls;
+  _adminSelectedNum = null;
+  const numSel = document.getElementById('adminNum');
+  numSel.innerHTML = '<option value="">-- เลือกเลขที่ --</option>';
+  numSel.disabled = !cls;
+  document.getElementById('adminStuCard').classList.remove('show');
+  if(!cls) return;
+  (STUDENTS[cls]||[]).forEach(s=>{
+    const o = document.createElement('option');
+    o.value = s.num; o.textContent = 'เลขที่ ' + s.num;
+    numSel.appendChild(o);
+  });
+}
+
+function adminOnNumChange(){
+  const cls = document.getElementById('adminCls').value;
+  const num = document.getElementById('adminNum').value;
+  _adminSelectedCls = cls;
+  _adminSelectedNum = num;
+  if(!cls || !num){ document.getElementById('adminStuCard').classList.remove('show'); return; }
+  _renderAdminStuCard(cls, num);
+}
+
+function _renderAdminStuCard(cls, num){
+  const stu = (STUDENTS[cls]||[]).find(x=>String(x.num)===String(num));
+  if(!stu){ document.getElementById('adminStuCard').classList.remove('show'); return; }
+
+  let saved = null;
+  try{ const raw = localStorage.getItem(sKey(cls, num)); if(raw) saved = JSON.parse(raw); }catch(e){}
+
+  const card = document.getElementById('adminStuCard');
+  document.getElementById('adminStuName').textContent = stu.name;
+  document.getElementById('adminStuMeta').textContent = cls + ' เลขที่ ' + num;
+
+  const statusEl = document.getElementById('adminStuStatus');
+  const scoreEl = document.getElementById('adminStuScore');
+  const resetBtn = document.getElementById('adminResetBtn');
+
+  if(saved){
+    statusEl.className = 'admin-stu-status status-done';
+    statusEl.innerHTML = '🔒 ทำแบบทดสอบแล้ว';
+    scoreEl.style.display = 'block';
+    scoreEl.innerHTML =
+      'คะแนน: <strong style="color:var(--gold-light)">' + saved.score + '/' + TOTAL + ' ข้อ</strong>' +
+      '  =  ' + saved.scaled + ' / 2.5 คะแนน (' + saved.pct + '%)<br>' +
+      '<span style="opacity:.6">ทำเมื่อ: ' + new Date(saved.ts).toLocaleString('th-TH') + '</span>';
+    resetBtn.disabled = false;
+    resetBtn.textContent = '🔓 ปลดล็อก — ล้างคำตอบของนักเรียนคนนี้';
+    card.classList.remove('not-taken');
+  } else {
+    statusEl.className = 'admin-stu-status status-free';
+    statusEl.innerHTML = '✅ ยังไม่ได้ทำ / พร้อมทำ';
+    scoreEl.style.display = 'none';
+    resetBtn.disabled = true;
+    resetBtn.textContent = '✅ ไม่มีคำตอบที่ต้องล้าง';
+    card.classList.add('not-taken');
+  }
+  card.classList.add('show');
+}
+
+function adminDoReset(){
+  const cls = _adminSelectedCls;
+  const num = _adminSelectedNum;
+  if(!cls || !num) return;
+  const stu = (STUDENTS[cls]||[]).find(x=>String(x.num)===String(num));
+  if(!stu) return;
+
+  // ลบ localStorage
+  try{ localStorage.removeItem(sKey(cls, num)); }catch(e){}
+
+  // ปิด done-overlay เสมอ (ป้องกัน overlay ค้าง)
+  document.getElementById('doneOverlay').classList.remove('show');
+
+  // ตรวจว่าตรงกับนักเรียนที่เลือกอยู่หน้าหลักหรือไม่
+  const curCls = document.getElementById('studentClass').value;
+  const curNum = document.getElementById('studentNum').value;
+  const isCurrentStudent = (String(curCls) === String(cls) && String(curNum) === String(num));
+
+  if(isCurrentStudent){
+    // รีเซ็ต quiz state ให้ทำใหม่ได้ทันที
+    _resetQuizState();
+    // ปิด admin panel แล้วแสดง banner บนหน้าหลัก
+    closeAdminPanel();
+    showResetToast();
+  } else {
+    // อัปเดต card ใน panel และแสดง toast
+    _renderAdminStuCard(cls, num);
+    _showAdminToast('✅ ล้างคำตอบของ ' + stu.name + ' เรียบร้อยแล้ว');
+  }
+}
+
+function _resetQuizState(){
+  // รีเซ็ต submitted state และ UI
+  submitted = false;
+  window._quizDone = false;
+  for(const k in userAnswers) delete userAnswers[k];
+  finalScore = 0;
+  // Unlock selectors
+  document.getElementById('studentClass').disabled = false;
+  document.getElementById('studentNum').disabled = false;
+  document.getElementById('submitBtn').disabled = false;
+  // รีเซ็ต quiz cards
+  document.querySelectorAll('.q-card').forEach(card=>{
+    card.className = 'q-card';
+  });
+  document.querySelectorAll('.answered-badge').forEach(b=>{
+    b.className = 'answered-badge';
+  });
+  document.querySelectorAll('.choice-label').forEach(lbl=>{
+    lbl.classList.remove('selected','show-wrong');
+  });
+  document.querySelectorAll('input[type="radio"]').forEach(r=>{ r.checked = false; });
+  updateProg();
+  // ปิด modal result ถ้าเปิดอยู่
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+// ===== BULK RESET =====
+let _bulkSelectedCls = null;
+
+function _buildClassChips(){
+  const container = document.getElementById('adminClassChips');
+  container.innerHTML = '';
+  const classes = Object.keys(STUDENTS);
+  classes.forEach(cls=>{
+    const chip = document.createElement('button');
+    chip.className = 'class-chip';
+    chip.textContent = cls;
+    chip.onclick = ()=>_selectBulkClass(cls, chip);
+    container.appendChild(chip);
+  });
+  _bulkSelectedCls = null;
+  document.getElementById('adminBulkBtn').disabled = true;
+  document.getElementById('adminBulkBtn').textContent = 'เลือกชั้นเรียนก่อน';
+  document.getElementById('adminBulkCount').textContent = '';
+}
+
+function _selectBulkClass(cls, chipEl){
+  _bulkSelectedCls = cls;
+  document.querySelectorAll('.class-chip').forEach(c=>c.classList.remove('selected'));
+  chipEl.classList.add('selected');
+  // นับว่ากี่คนที่ทำแล้ว
+  const students = STUDENTS[cls]||[];
+  const doneCount = students.filter(s=>{
+    try{ return !!localStorage.getItem(sKey(cls, s.num)); }catch(e){ return false; }
+  }).length;
+  const btn = document.getElementById('adminBulkBtn');
+  const info = document.getElementById('adminBulkCount');
+  if(doneCount === 0){
+    btn.disabled = true;
+    btn.textContent = 'ไม่มีคำตอบที่ต้องล้าง';
+    info.textContent = cls + ' — ยังไม่มีนักเรียนคนใดทำแบบทดสอบ';
+  } else {
+    btn.disabled = false;
+    btn.textContent = '⚡ ล้างคำตอบทั้งหมดของ ' + cls + ' (' + doneCount + ' คน)';
+    info.textContent = 'มีนักเรียนที่ทำแล้ว ' + doneCount + ' คน จากทั้งหมด ' + students.length + ' คน';
+  }
+}
+
+function adminDoBulkReset(){
+  if(!_bulkSelectedCls) return;
+  const cls = _bulkSelectedCls;
+  const students = STUDENTS[cls]||[];
+  let count = 0;
+  students.forEach(s=>{
+    const key = sKey(cls, s.num);
+    try{
+      if(localStorage.getItem(key)){ localStorage.removeItem(key); count++; }
+    }catch(e){}
+  });
+
+  // ถ้านักเรียนที่กำลังเลือกอยู่อยู่ในชั้นนี้ → รีเซ็ต UI ด้วย
+  const curCls = document.getElementById('studentClass').value;
+  if(curCls === cls){
+    document.getElementById('doneOverlay').classList.remove('show');
+    _resetQuizState();
+    showResetToast();
+  }
+
+  _selectBulkClass(cls, document.querySelector('.class-chip.selected'));
+  _showAdminToast('✅ ล้างคำตอบ ' + cls + ' จำนวน ' + count + ' คน เรียบร้อยแล้ว');
+
+  // อัปเดต student card ถ้ากำลังแสดงอยู่
+  if(_adminSelectedCls === cls && _adminSelectedNum){
+    _renderAdminStuCard(_adminSelectedCls, _adminSelectedNum);
+  }
+}
+
+function _showAdminToast(msg){
+  let toast = document.getElementById('adminPanelToast');
+  if(!toast){
+    toast = document.createElement('div');
+    toast.id = 'adminPanelToast';
+    toast.style.cssText = [
+      'position:fixed;bottom:80px;right:22px;z-index:500',
+      'background:#14532d;border:1.5px solid #4ade80',
+      'border-radius:12px;padding:11px 18px',
+      'font-family:Mitr,sans-serif;font-size:.88rem;color:#86efac',
+      'box-shadow:0 4px 20px rgba(0,0,0,.5)',
+      'max-width:300px;line-height:1.5',
+      'animation:fadeIn .3s ease',
+      'transition:opacity .3s'
+    ].join(';');
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(()=>{ toast.style.opacity='0'; }, 4000);
+}
+
+// CSS fadeIn keyframe (inject once)
+(function(){
+  if(document.getElementById('fadeInKF')) return;
+  const s = document.createElement('style');
+  s.id = 'fadeInKF';
+  s.textContent = '@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}';
+  document.head.appendChild(s);
+})();
 
 // INIT
 buildQuiz();
