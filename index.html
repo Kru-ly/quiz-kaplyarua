@@ -402,11 +402,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--deep);color:var(--cream);
     <div class="done-score" id="doneScoreVal">—</div>
     <div class="done-score-sub" id="doneScoreSub"></div>
     <div style="font-size:.82rem;color:rgba(201,168,76,.45);margin-top:8px">แบบทดสอบนี้ทำได้เพียงครั้งเดียว</div>
-    <div class="admin-unlock-wrap">
-      <button class="admin-unlock-btn" onclick="openAdminModal('reset')">
-        <span class="key-icon">🔑</span>
-        <span>ยกเลิกคำตอบ — เฉพาะผู้ดูแล</span>
-      </button>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(201,168,76,.12);font-size:.82rem;color:rgba(255,255,255,.28);line-height:1.9;text-align:center">
+      หากต้องการทำใหม่<br>กรุณาติดต่อครูเพื่อขอปลดล็อก
     </div>
   </div>
 </div>
@@ -578,9 +575,9 @@ body{font-family:'Sarabun',sans-serif;background:var(--deep);color:var(--cream);
     <div class="modal-name" id="modalName"></div>
     <div class="modal-class" id="modalClass"></div>
     <div class="modal-wrong-summary" id="modalWrongSummary"></div>
-    <button class="btn-block btn-gold" onclick="reviewWrong()">🔍 ดูข้อที่ตอบผิด</button>
-    <div class="send-status send-pending" id="sendStatus">⏳ กำลังส่งคะแนนให้ครู...</div>
-    <div style="font-size:.8rem;color:rgba(201,168,76,.45);margin-top:12px">แบบทดสอบนี้ทำได้เพียงครั้งเดียว</div>
+    <button class="btn-block btn-gold" onclick="reviewWrong()" id="btnReviewWrong" style="display:none">🔍 ดูข้อที่ตอบผิด</button>
+    <div id="sendStatus" class="send-status send-pending" style="margin-top:10px">⏳ กำลังบันทึกคะแนน...</div>
+    <div style="font-size:.8rem;color:rgba(201,168,76,.45);margin-top:10px">แบบทดสอบนี้ทำได้เพียงครั้งเดียว</div>
   </div>
 </div>
 
@@ -874,8 +871,21 @@ function submitQuiz(){
       const lbl=document.getElementById('choice-'+q.num+'-'+c.key);
       if(c.key===given&&given!==correct)lbl.classList.add('show-wrong');
     });
-    if(given===correct){score++;card.classList.remove('answered');card.classList.add('correct');badge.className='answered-badge show correct-badge';badge.textContent='✓ ถูก';}
-    else{card.classList.remove('answered');card.classList.add('wrong');badge.className='answered-badge show wrong-badge';badge.textContent='✗ ผิด';}
+    if(given===correct){
+      score++;
+      // ข้อถูก — คืน card เป็นปกติ ไม่แสดงสีเขียว ป้องกันลอก
+      card.classList.remove('answered');
+      badge.className='answered-badge'; // ซ่อน badge
+      // ซ่อน selected highlight ด้วย
+      document.querySelectorAll('[id^="choice-'+q.num+'-"]').forEach(el=>{
+        el.classList.remove('selected');
+      });
+    } else {
+      card.classList.remove('answered');
+      card.classList.add('wrong');
+      badge.className='answered-badge show wrong-badge';
+      badge.textContent='✗ ผิด';
+    }
   });
   finalScore=score;
   const pct=Math.round(score/TOTAL*100);
@@ -892,15 +902,18 @@ function submitQuiz(){
   // Prevent page reload/close accidentally
   window._quizDone=true;
 
-  // Build wrong list
+  // Build wrong list — แสดงเฉพาะข้อผิด ไม่บอกข้อถูก
   const wrongNums=[];
   questions.forEach(q=>{if(userAnswers[q.num]!==ANSWER_KEY[q.num])wrongNums.push(q.num);});
   const wrongSummary=document.getElementById('modalWrongSummary');
+  const reviewBtn=document.getElementById('btnReviewWrong');
   if(wrongNums.length===0){
     wrongSummary.style.display='none';
+    if(reviewBtn) reviewBtn.style.display='none';
   } else {
     wrongSummary.className='modal-wrong-summary show';
     wrongSummary.innerHTML='<strong>ข้อที่ตอบผิด ('+wrongNums.length+' ข้อ):</strong><br>ข้อที่ '+wrongNums.join(', ');
+    if(reviewBtn) reviewBtn.style.display='block';
   }
 
   document.getElementById('modalScore').textContent=score;
@@ -911,7 +924,7 @@ function submitQuiz(){
   // ส่งคะแนนแบบ background (ไม่เปลี่ยนหน้า) ผ่าน fetch
   const scoreUrl = 'https://kru-ly.github.io/scorethai169/'
     + '?unit=1&topic=' + encodeURIComponent('กาพย์เห่เรือ')
-    + '&quiz=' + encodeURIComponent('สอบท้ายหน่วย1')
+    + '&quiz=' + encodeURIComponent('สอบท้ายหน่วย 1')
     + '&name=' + encodeURIComponent(currentStudent.name)
     + '&class=' + encodeURIComponent(currentStudent.cls)
     + '&num=' + currentStudent.num
@@ -920,31 +933,35 @@ function submitQuiz(){
     + '&scaled=' + scaled
     + '&pct=' + pct;
 
-  sendScoreBackground(scoreUrl);
+  // ส่งคะแนนอัตโนมัติผ่าน iframe (ไม่ต้องกดอีกครั้ง)
+  sendScoreAuto(scoreUrl);
   document.getElementById('modalOverlay').classList.add('show');
 }
 
-function sendScoreBackground(url){
+function sendScoreAuto(url){
   const st = document.getElementById('sendStatus');
+  st.style.display = 'block';
   st.className = 'send-status send-pending';
-  st.textContent = '⏳ กำลังส่งคะแนนให้ครู...';
-  // ใช้ fetch no-cors เพราะ cross-origin (GitHub Pages)
-  // การส่งจริงเกิดจากการที่ browser โหลด URL นั้น
-  const img = new Image();
-  img.onload = img.onerror = function(){
-    // ลองด้วย fetch ต่อ
-    fetch(url, {mode:'no-cors'})
-      .then(()=>{
-        st.className='send-status send-ok';
-        st.textContent='✅ ส่งคะแนนให้ครูเรียบร้อยแล้ว';
-      })
-      .catch(()=>{
-        // no-cors ไม่ throw จริง แต่ถ้า fail จริงๆ
-        st.className='send-status send-ok';
-        st.textContent='✅ ส่งคะแนนเรียบร้อย';
-      });
+  st.textContent = '⏳ กำลังบันทึกคะแนน...';
+
+  // ส่งผ่าน iframe invisible
+  let iframe = document.getElementById('_scoreFrame');
+  if(!iframe){
+    iframe = document.createElement('iframe');
+    iframe.id = '_scoreFrame';
+    iframe.style.cssText = 'display:none;width:0;height:0;border:none;position:absolute;left:-9999px';
+    document.body.appendChild(iframe);
+  }
+  const done = ()=>{
+    st.className = 'send-status send-ok';
+    st.textContent = '✅ บันทึกคะแนนเรียบร้อยแล้ว';
+    setTimeout(()=>{ st.style.display='none'; }, 3000);
   };
-  img.src = url;
+  iframe.onload = done;
+  iframe.onerror = done;
+  iframe.src = url;
+  // fallback หลัง 4 วิ
+  setTimeout(done, 4000);
 }
 
 function reviewWrong(){
