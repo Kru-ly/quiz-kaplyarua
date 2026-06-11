@@ -921,19 +921,19 @@ function submitQuiz(){
   document.getElementById('modalPct').textContent=scaled+' / 2.5 คะแนน  ('+pct+'%)';
   document.getElementById('modalName').textContent=currentStudent.name+'  เลขที่ '+currentStudent.num;
   document.getElementById('modalClass').textContent='ชั้น '+currentStudent.cls;
-  // ส่งคะแนนแบบ background (ไม่เปลี่ยนหน้า) ผ่าน fetch
-  const scoreUrl = 'https://kru-ly.github.io/scorethai169/'
-    + '?unit=1&topic=' + encodeURIComponent('กาพย์เห่เรือ')
-    + '&quiz=' + encodeURIComponent('สอบท้ายหน่วย 1')
-    + '&name=' + encodeURIComponent(currentStudent.name)
+  // ส่งคะแนนไปยัง Google Sheets ผ่าน Apps Script
+  const APPS_SCRIPT_URL = 'REPLACE_WITH_YOUR_APPS_SCRIPT_URL';
+  const scoreUrl = APPS_SCRIPT_URL
+    + '?topic=' + encodeURIComponent('กาพย์เห่เรือ')
+    + '&quiz='  + encodeURIComponent('สอบท้ายหน่วย 1')
+    + '&name='  + encodeURIComponent(currentStudent.name)
     + '&class=' + encodeURIComponent(currentStudent.cls)
-    + '&num=' + currentStudent.num
+    + '&num='   + currentStudent.num
     + '&score=' + score
-    + '&full=' + TOTAL
-    + '&scaled=' + scaled
-    + '&pct=' + pct;
+    + '&full='  + TOTAL
+    + '&scaled='+ scaled
+    + '&pct='   + pct;
 
-  // ส่งคะแนนอัตโนมัติผ่าน iframe (ไม่ต้องกดอีกครั้ง)
   sendScoreAuto(scoreUrl);
   document.getElementById('modalOverlay').classList.add('show');
 }
@@ -944,24 +944,24 @@ function sendScoreAuto(url){
   st.className = 'send-status send-pending';
   st.textContent = '⏳ กำลังบันทึกคะแนน...';
 
-  // ส่งผ่าน iframe invisible
-  let iframe = document.getElementById('_scoreFrame');
-  if(!iframe){
-    iframe = document.createElement('iframe');
-    iframe.id = '_scoreFrame';
-    iframe.style.cssText = 'display:none;width:0;height:0;border:none;position:absolute;left:-9999px';
-    document.body.appendChild(iframe);
+  // ถ้ายังไม่ได้ใส่ Apps Script URL → แจ้งเตือน
+  if(url.includes('REPLACE_WITH_YOUR_APPS_SCRIPT_URL')){
+    st.className = 'send-status send-err';
+    st.textContent = '⚠ ยังไม่ได้ตั้งค่า Apps Script URL';
+    return;
   }
-  const done = ()=>{
-    st.className = 'send-status send-ok';
-    st.textContent = '✅ บันทึกคะแนนเรียบร้อยแล้ว';
-    setTimeout(()=>{ st.style.display='none'; }, 3000);
-  };
-  iframe.onload = done;
-  iframe.onerror = done;
-  iframe.src = url;
-  // fallback หลัง 4 วิ
-  setTimeout(done, 4000);
+
+  // ส่งผ่าน fetch (no-cors) ไปยัง Apps Script
+  fetch(url, { method: 'GET', mode: 'no-cors' })
+    .then(() => {
+      st.className = 'send-status send-ok';
+      st.textContent = '✅ บันทึกคะแนนเรียบร้อยแล้ว';
+      setTimeout(()=>{ st.style.display='none'; }, 3000);
+    })
+    .catch(() => {
+      st.className = 'send-status send-err';
+      st.textContent = '❌ บันทึกไม่สำเร็จ — ตรวจสอบการเชื่อมต่อ';
+    });
 }
 
 function reviewWrong(){
