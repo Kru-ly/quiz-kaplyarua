@@ -922,7 +922,7 @@ function submitQuiz(){
   document.getElementById('modalName').textContent=currentStudent.name+'  เลขที่ '+currentStudent.num;
   document.getElementById('modalClass').textContent='ชั้น '+currentStudent.cls;
   // ส่งคะแนนไปยัง Google Sheets ผ่าน Apps Script
-  const APPS_SCRIPT_URL = 'REPLACE_WITH_YOUR_APPS_SCRIPT_URL';
+  const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/knw.ac.th/s/AKfycbxkUvwc5GGjDS1cmgjneOebUBz8RMS-tkbKpDCthFlRwtR_h4ENkIX0lFfbi_oEbmvz/exec';
   const scoreUrl = APPS_SCRIPT_URL
     + '?topic=' + encodeURIComponent('กาพย์เห่เรือ')
     + '&quiz='  + encodeURIComponent('สอบท้ายหน่วย 1')
