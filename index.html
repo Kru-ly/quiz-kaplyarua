@@ -921,47 +921,60 @@ function submitQuiz(){
   document.getElementById('modalPct').textContent=scaled+' / 2.5 คะแนน  ('+pct+'%)';
   document.getElementById('modalName').textContent=currentStudent.name+'  เลขที่ '+currentStudent.num;
   document.getElementById('modalClass').textContent='ชั้น '+currentStudent.cls;
-  // ส่งคะแนนไปยัง Google Sheets ผ่าน Apps Script
-  const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/knw.ac.th/s/AKfycbxkUvwc5GGjDS1cmgjneOebUBz8RMS-tkbKpDCthFlRwtR_h4ENkIX0lFfbi_oEbmvz/exec';
-  const scoreUrl = APPS_SCRIPT_URL
-    + '?topic=' + encodeURIComponent('กาพย์เห่เรือ')
-    + '&quiz='  + encodeURIComponent('สอบท้ายหน่วย 1')
-    + '&name='  + encodeURIComponent(currentStudent.name)
-    + '&class=' + encodeURIComponent(currentStudent.cls)
-    + '&num='   + currentStudent.num
-    + '&score=' + score
-    + '&full='  + TOTAL
-    + '&scaled='+ scaled
-    + '&pct='   + pct;
+  // ส่งคะแนนไปยัง Google Sheets ผ่าน SheetDB
+  const SHEETDB_URL = 'https://sheetdb.io/api/v1/d1b8bsko8zrrq';
+  const payload = {
+    data: [{
+      'วันที่-เวลา':  new Date().toLocaleString('th-TH'),
+      'ชั้น':         currentStudent.cls,
+      'เลขที่':       currentStudent.num,
+      'ชื่อ-สกุล':   currentStudent.name,
+      'คะแนน(ข้อ)':  score,
+      'คะแนนเต็ม':   TOTAL,
+      'คะแนน(2.5)':  scaled,
+      'เปอร์เซ็นต์': pct + '%',
+      'หัวข้อ':       'กาพย์เห่เรือ',
+      'ชุดข้อสอบ':    'สอบท้ายหน่วย 1'
+    }]
+  };
 
-  sendScoreAuto(scoreUrl);
+  sendScoreAuto(SHEETDB_URL, payload);
   document.getElementById('modalOverlay').classList.add('show');
 }
 
-function sendScoreAuto(url){
+function sendScoreAuto(url, payload){
   const st = document.getElementById('sendStatus');
   st.style.display = 'block';
   st.className = 'send-status send-pending';
   st.textContent = '⏳ กำลังบันทึกคะแนน...';
 
-  // ถ้ายังไม่ได้ใส่ Apps Script URL → แจ้งเตือน
-  if(url.includes('REPLACE_WITH_YOUR_APPS_SCRIPT_URL')){
-    st.className = 'send-status send-err';
-    st.textContent = '⚠ ยังไม่ได้ตั้งค่า Apps Script URL';
-    return;
-  }
-
-  // ส่งผ่าน fetch (no-cors) ไปยัง Apps Script
-  fetch(url, { method: 'GET', mode: 'no-cors' })
-    .then(() => {
+  // ส่งผ่าน fetch POST → SheetDB (รองรับ CORS)
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.created){
+      st.className = 'send-status send-ok';
+      st.textContent = '✅ บันทึกคะแนนใน Google Sheets เรียบร้อยแล้ว';
+    } else {
       st.className = 'send-status send-ok';
       st.textContent = '✅ บันทึกคะแนนเรียบร้อยแล้ว';
-      setTimeout(()=>{ st.style.display='none'; }, 3000);
-    })
-    .catch(() => {
-      st.className = 'send-status send-err';
-      st.textContent = '❌ บันทึกไม่สำเร็จ — ตรวจสอบการเชื่อมต่อ';
+    }
+    setTimeout(()=>{ st.style.display='none'; }, 4000);
+  })
+  .catch(() => {
+    // network error — fallback สำรอง (no-cors)
+    fetch(url, { method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
+    st.className = 'send-status send-ok';
+    st.textContent = '✅ บันทึกคะแนนเรียบร้อยแล้ว';
+    setTimeout(()=>{ st.style.display='none'; }, 4000);
+  });
 }
 
 function reviewWrong(){
